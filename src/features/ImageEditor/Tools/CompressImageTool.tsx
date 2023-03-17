@@ -12,6 +12,7 @@ const CompressImageTool = () => {
     const [compressOpt, setCompressOpt] = useState<Options>({
         maxSizeMB: (ctx.originalFile?.size ?? 0) / oneMb,
         useWebWorker: true,
+        // alwaysKeepResolution: true,
         onProgress: (e) => {
             setCompressionProgress(e)
             if (e == 100)
@@ -22,11 +23,8 @@ const CompressImageTool = () => {
 
 
     const compressionStrength = (procentage: number) => {
-        console.log(procentage)
         setCompressOpt(acc => {
-            console.log({ size: (ctx.originalFile?.size ?? 0) / oneMb, procentage, oneMb })
             const nv = ({ ...acc, maxSizeMB: (ctx.originalFile?.size ?? 0) * (0.01 * procentage) / oneMb })
-            console.log(`[MB]`, nv)
             return nv
         })
     }
@@ -34,8 +32,8 @@ const CompressImageTool = () => {
     const compressFile = async (imageFile: File, options: Options = compressOpt) => {
         const compressedFile = await imageCompression(imageFile, options);
 
-        console.log('compressedFile instanceof Blob', compressedFile instanceof Blob, options); // true
-        console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
+        // console.log('compressedFile instanceof Blob', compressedFile instanceof Blob, options); // true
+        // console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
         return compressedFile
     }
 
@@ -64,8 +62,7 @@ const CompressImageTool = () => {
 
                 />
             </div>
-          {inProgress==true &&  <LinearProgressWithLabel value={compressionProgress} />}
-            {/* <LinearProgress variant="determinate"   value={compressionProgress} placeholder={`${compressionProgress}%`} /> */}
+            {inProgress == true && <LinearProgressWithLabel value={compressionProgress} />}
             <Typography>
                 CompressImageTool</Typography>
             <Button onClick={onCompressClick}>

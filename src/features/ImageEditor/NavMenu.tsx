@@ -5,13 +5,12 @@ import { createUseStyles } from 'react-jss'
 import { BACKGROUND } from '../theme/colors'
 import { ImageEditorContext } from './ImageEditor'
 import CompressImageTool from './Tools/CompressImageTool'
+import { DiffComponent } from './Tools/DiffComponent'
 
 const NavMenu = () => {
     const ctx = useContext(ImageEditorContext)
 
     const style = useStyles()
-
-
 
     const onFileInputChange = async (e: any) => {
         const imageFile = e.target.files[0];
@@ -25,14 +24,13 @@ const NavMenu = () => {
 
     const downloadFile = () => {
         if (!ctx.processedFile) return
-
         const a = document.createElement("a")
         a.href = URL.createObjectURL(ctx.processedFile)
-        a.download = "an-compressed-file.jpg"
+        a.download = `${ctx.fileName}.jpg`
         a.click()
     }
+
     const showDiffrence = async () => {
-        console.log('switching', ctx.activeFile)
         ctx.setActiveFile(ctx.activeFile == 'original' ? 'processed' : 'original')
     }
 
@@ -63,7 +61,7 @@ const NavMenu = () => {
                     </>
                 }
                 {ctx.processedFile && <>
-                    <Button onClick={showDiffrence}>diff</Button>
+                    <Button onClick={()=>ctx.setTool(<DiffComponent/>)}>diff</Button>
                     <Button onClick={onDownloadClick}>download</Button>
                     <Button onClick={clearData} >Wyczyść dane</Button>
                 </>
