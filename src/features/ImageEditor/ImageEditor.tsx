@@ -1,0 +1,92 @@
+import React, { createContext } from 'react'
+import imageCompression, { Options } from 'browser-image-compression';
+import { useEffect, useRef, useState } from 'react'
+import NavMenu from './NavMenu';
+import ImageBlackboard from './ImageBlackboard';
+import { createUseStyles } from 'react-jss';
+import { BACKGROUND } from '../theme/colors';
+import ContentContainer from '../ContentContainer/ContentContainer';
+
+export type CanvasSize = { w: number, h: number }
+export type ActiveFile = "original" | 'processed' | undefined
+export type ImageEditorContextType = {
+    originalFile: File | null,
+    processedFile: File | null,
+    setProcessedFile: (file: File | null) => void,
+    setOriginalFile: (file: File | null) => void
+    activeFile: ActiveFile | null,
+    canvasSize: CanvasSize | null
+    setCanvasSize: (size: CanvasSize | null) => void
+    setActiveFile: (active: ActiveFile | null) => void
+    canvas: React.MutableRefObject<HTMLCanvasElement | null | undefined>
+    fileName: string | null,
+    setFileName: (fileName: string | null) => void
+    setTool: (tool: JSX.Element | null) => void
+}
+
+export const ImageEditorContext = createContext<ImageEditorContextType>({} as ImageEditorContextType)
+
+const ImageEditor = () => {
+    const [originalFile, setOriginalFile] = useState<File | null>(null)
+    const [processedFile, setProcessedFile] = useState<File | null>(null)
+    const [activeFile, setActiveFile] = useState<ActiveFile | null>(null)
+    const canvasRef = useRef<HTMLCanvasElement | null>(null)
+    const [fileName, setFileName] = useState<string | null>(null)
+    const [canvasSize, setCanvasSize] = useState<{ w: number, h: number } | null>(null)
+    const [tool, setTool] = useState<JSX.Element | null>(null)
+    const style = useStyles()
+
+
+    const contextValue: ImageEditorContextType = {
+        activeFile,
+        setCanvasSize: (size) => setCanvasSize(size),
+        canvasSize,
+        originalFile,
+        processedFile,
+        setProcessedFile: (file: File | null) => setProcessedFile(file),
+        setOriginalFile: (file: File | null) => setOriginalFile(file),
+        setActiveFile: (active: ActiveFile | null) => setActiveFile(active),
+        canvas: canvasRef,
+        fileName,
+        setFileName: (fileName: string | null) => setFileName(fileName),
+        setTool: (tool: JSX.Element | null) => setTool(tool),
+    }
+
+    console.log({ activeFile, canvasSize, ref: canvasRef.current, fileName, originalFile, processedFile })
+
+    return (
+        <ImageEditorContext.Provider value={contextValue} >
+            <div className={style.layoutStyle + ' layout'}>
+
+                <ContentContainer>
+                    <NavMenu />
+                </ContentContainer>
+
+                {tool && originalFile &&
+                    <ContentContainer>
+                        {tool}
+                    </ContentContainer>}
+
+                {
+                    canvasSize && originalFile &&
+                    <ContentContainer>
+                        <ImageBlackboard />
+                    </ContentContainer>
+                }
+
+            </div>
+        </ImageEditorContext.Provider>
+    )
+}
+
+export default ImageEditor
+
+
+
+const useStyles = createUseStyles((theme) => {
+    return ({
+        layoutStyle: {
+            backgroundColor: BACKGROUND.secondaryLight
+        }
+    })
+});
