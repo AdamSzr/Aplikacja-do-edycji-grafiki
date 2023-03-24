@@ -6,6 +6,7 @@ import { BACKGROUND } from '../theme/colors'
 import { ImageEditorContext } from './ImageEditor'
 import CompressImageTool from './Tools/CompressImageTool'
 import { DiffComponent } from './Tools/DiffComponent'
+import RemoveBackground from './Tools/RemoveBackground'
 
 const NavMenu = () => {
     const ctx = useContext(ImageEditorContext)
@@ -56,7 +57,8 @@ const NavMenu = () => {
 
                 {
                     ctx.originalFile && <>
-                        <Button onClick={() => ctx.setTool(<CompressImageTool />)}>compress </Button>
+                        <Button onClick={() => ctx.setTool(<CompressImageTool />)}> kompresja </Button>
+                        <Button onClick={() => ctx.setTool(<RemoveBackground />)}> usuwanie tla </Button>
                         <Button onClick={clearData} >Wyczyść dane</Button>
                     </>
                 }
