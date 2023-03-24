@@ -11,32 +11,33 @@ const RemoveBackground = () => {
     const canvasRef = useRef<HTMLCanvasElement>()
 
     useEffect(()=>{
-        tf.setBackend('cpu')
-        tf.ready().then(_ =>{
-            if(canvasRef.current!=undefined){
-                const cvs = canvasRef.current
-                 const ctx2d =  cvs.getContext('2d')
-     
-                 imageCompression.drawFileInCanvas(ctx.originalFile!)
-                 .then(
-                     ([imgEle, offsetCanvas]) => {
-                         const baseCtx = canvasRef.current?.getContext(`2d`)
-                         console.log('drawing original')
-                         const sizes = { w: imgEle.width, h: imgEle.height }
-                         console.log({sizes})
-                         canvasRef.current!.width = sizes.w
-                         canvasRef.current!.height = sizes.h
-                         ctx.setCanvasSize(sizes)
-                         baseCtx?.clearRect(0, 0, sizes.w, sizes.h)
-     
-                         setTimeout(() => {
-                             baseCtx?.drawImage(imgEle, 0, 0)
-                         }, 200);
-     
-                     }
-                 )
-             }
-        })
+        tf.setBackend('webgl')
+        if(canvasRef.current!=undefined){
+            const cvs = canvasRef.current
+             const ctx2d =  cvs.getContext('2d')
+ 
+             imageCompression.drawFileInCanvas(ctx.originalFile!)
+             .then(
+                 ([imgEle, offsetCanvas]) => {
+                     const baseCtx = canvasRef.current?.getContext(`2d`)
+                     console.log('drawing original')
+                     const sizes = { w: imgEle.width, h: imgEle.height }
+                     console.log({sizes})
+                     canvasRef.current!.width = sizes.w
+                     canvasRef.current!.height = sizes.h
+                     ctx.setCanvasSize(sizes)
+                     baseCtx?.clearRect(0, 0, sizes.w, sizes.h)
+ 
+                     setTimeout(() => {
+                         baseCtx?.drawImage(imgEle, 0, 0)
+                     }, 200);
+ 
+                 }
+             )
+         }
+
+        // tf.ready().then(_ =>{
+        // })
        
     },[])
 
