@@ -15,10 +15,14 @@ export default function Home() {
       </Head>
       <main >
         <a href="/test">
-          idz do strony test
+         <button>
+         idz do strony test
+         </button>
         </a>
         <a href="/image-editor">
+          <button>
           Edycja obrazków
+          </button>
         </a>
       </main>
     </>

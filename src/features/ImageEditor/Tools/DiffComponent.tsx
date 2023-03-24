@@ -8,16 +8,16 @@ export const DiffComponent = () => {
     const orginalRef = useRef<HTMLCanvasElement>()
     const processedRef = useRef<HTMLCanvasElement>()
 
-
     useEffect(() => {
         const promiseTable = [imageCompression.drawFileInCanvas(ctx.originalFile!), imageCompression.drawFileInCanvas(ctx.processedFile!)]
 
         Promise.all(promiseTable).then((e) => {
             const orginalImg = e.at(0)
             const processedImg = e.at(1)
-            const orgImgBitmap:ImageBitmap= (orginalImg!.at(0) as ImageBitmap)
 
+            const orgImgBitmap:ImageBitmap= (orginalImg!.at(0) as ImageBitmap)
             const procImgBitmap:ImageBitmap= (processedImg!.at(0) as ImageBitmap)
+
             orginalRef.current?.getContext(`2d`)?.drawImage(orgImgBitmap, 0, 0)
             processedRef.current?.getContext(`2d`)?.drawImage(procImgBitmap, 0, 0)
             console.log({ processedImg, pp: orginalImg!.at(0), orginalImg, oi: orginalImg!.at(0), e })

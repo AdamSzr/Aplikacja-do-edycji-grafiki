@@ -29,7 +29,6 @@ const ImageBlackboard = () => {
 
                     setTimeout(() => {
                         baseCtx?.drawImage(imgEle, 0, 0)
-                        baseCtx?.fillRect(100, 100, 50, 50)
                     }, 200);
 
                 }
