@@ -5,19 +5,25 @@ import { ImageEditorContext } from '../ImageEditor'
 type Point = { x: number, y: number }
 
 const DrawOnBoard = () => {
-  const ctx = useContext(ImageEditorContext)
-  const [isDrawing, setIsDrawing] = useState(false)
-
-  const canvasRef = useRef<HTMLCanvasElement>()
-  const canvasCtxRef = useRef<CanvasRenderingContext2D>()
+  const { canvas, canvasContext } = useContext(ImageEditorContext)
+  // const [isDrawing, setIsDrawing] = useState(false)
   const lastPointPos = useRef<Point>()
+  const isDrawing = useRef<boolean>(false)
+
+
+  useEffect(() => {
+    canvas.current?.addEventListener('mousemove', (it) => { showCords(it); console.log(isDrawing) })
+    canvas.current?.addEventListener('mouseup', () => { console.log("mu"); isDrawing.current = (false); lastPointPos.current = undefined })
+    canvas.current?.addEventListener('mousedown', () => { console.log("md"); isDrawing.current = (true) })
+  }, [])
+
+
 
   function showCords({ offsetX, offsetY }: MouseEvent) {
-    if (!isDrawing || !canvasCtxRef.current)
+    if (!isDrawing.current || !canvasContext.current)
       return
 
     const point: Point = { x: offsetX, y: offsetY }
-
 
     if (lastPointPos.current == undefined) {
       lastPointPos.current = point
@@ -25,13 +31,10 @@ const DrawOnBoard = () => {
     }
 
     const prevPoint = lastPointPos.current
-
-
-
-    canvasCtxRef.current.beginPath()
-    canvasCtxRef.current.moveTo(prevPoint.x, prevPoint.y);
-    canvasCtxRef.current.lineTo(point.x, point.y);
-    canvasCtxRef.current.stroke();
+    canvasContext.current.beginPath()
+    canvasContext.current.moveTo(prevPoint.x, prevPoint.y);
+    canvasContext.current.lineTo(point.x, point.y);
+    canvasContext.current.stroke();
 
     lastPointPos.current = point
   }
@@ -39,32 +42,22 @@ const DrawOnBoard = () => {
 
 
 
-  useEffect(() => {
-    if (canvasRef.current) {
-      const ctx2D = canvasRef.current!.getContext(`2d`)!
-      canvasCtxRef.current = ctx2D
-    } else {
-      console.log("WAIT - canvas not loaded")
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (canvasRef.current) {
+  //     const ctx2D = canvasRef.current!.getContext(`2d`)!
+  //     canvasContext.current = ctx2D
+  //   } else {
+  //     console.log("WAIT - canvas not loaded")
+  //   }
+  // }, [])
 
 
   return (
     <div>
       <button onClick={() => { console.log('trzeba zaladowac plik') }} > zaladuj plik z pamieci </button>
-      <canvas
-        onMouseDown={e => setIsDrawing(true)}
-        onMouseMove={e => showCords(e.nativeEvent)}
-        onMouseUp={e => {
-          console.log("Mouse up")
-          setIsDrawing(false);
-          lastPointPos.current = undefined
-        }}
-        ref={canvasRef as any} width={500} height={500} style={{ border: '1px solid black' }}>
 
-      </canvas>
 
-    </div>
+    </div >
 
   )
 }

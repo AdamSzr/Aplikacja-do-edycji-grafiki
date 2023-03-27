@@ -19,6 +19,7 @@ export type ImageEditorContextType = {
     setCanvasSize: (size: CanvasSize | null) => void
     setActiveFile: (active: ActiveFile | null) => void
     canvas: React.MutableRefObject<HTMLCanvasElement | null | undefined>
+    canvasContext: React.MutableRefObject<CanvasRenderingContext2D | null | undefined>,
     fileName: string | null,
     setFileName: (fileName: string | null) => void
     setTool: (tool: JSX.Element | null) => void
@@ -31,10 +32,17 @@ const ImageEditor = () => {
     const [processedFile, setProcessedFile] = useState<File | null>(null)
     const [activeFile, setActiveFile] = useState<ActiveFile | null>(null)
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
+    const canvasContextRef = useRef<CanvasRenderingContext2D | null>(null)
     const [fileName, setFileName] = useState<string | null>(null)
-    const [canvasSize, setCanvasSize] = useState<{ w: number, h: number } | null>(null)
+    const [canvasSize, setCanvasSize] = useState<{ w: number, h: number } | null>({ w: 200, h: 200 })
     const [tool, setTool] = useState<JSX.Element | null>(null)
     const style = useStyles()
+
+
+    useEffect(() => {
+        if (canvasRef.current != null)
+            canvasContextRef.current = canvasRef.current.getContext('2d')
+    }, [canvasRef.current])
 
 
     const contextValue: ImageEditorContextType = {
@@ -47,6 +55,7 @@ const ImageEditor = () => {
         setOriginalFile: (file: File | null) => setOriginalFile(file),
         setActiveFile: (active: ActiveFile | null) => setActiveFile(active),
         canvas: canvasRef,
+        canvasContext: canvasContextRef,
         fileName,
         setFileName: (fileName: string | null) => setFileName(fileName),
         setTool: (tool: JSX.Element | null) => setTool(tool),
@@ -68,7 +77,7 @@ const ImageEditor = () => {
                     </ContentContainer>}
 
                 {
-                    canvasSize && originalFile &&
+                    canvasSize &&
                     <ContentContainer>
                         <ImageBlackboard />
                     </ContentContainer>
