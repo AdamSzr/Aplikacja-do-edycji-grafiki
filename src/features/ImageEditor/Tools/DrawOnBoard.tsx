@@ -6,15 +6,14 @@ type Point = { x: number, y: number }
 
 const DrawOnBoard = () => {
   const { canvas, canvasContext } = useContext(ImageEditorContext)
-  // const [isDrawing, setIsDrawing] = useState(false)
   const lastPointPos = useRef<Point>()
   const isDrawing = useRef<boolean>(false)
 
 
   useEffect(() => {
-    canvas.current?.addEventListener('mousemove', (it) => { showCords(it); console.log(isDrawing) })
-    canvas.current?.addEventListener('mouseup', () => { console.log("mu"); isDrawing.current = (false); lastPointPos.current = undefined })
-    canvas.current?.addEventListener('mousedown', () => { console.log("md"); isDrawing.current = (true) })
+    canvas.current?.addEventListener('mousemove', (it) => { showCords(it); })
+    canvas.current?.addEventListener('mouseup', () => { isDrawing.current = (false); lastPointPos.current = undefined })
+    canvas.current?.addEventListener('mousedown', () => { isDrawing.current = (true) })
   }, [])
 
 
@@ -38,18 +37,6 @@ const DrawOnBoard = () => {
 
     lastPointPos.current = point
   }
-
-
-
-
-  // useEffect(() => {
-  //   if (canvasRef.current) {
-  //     const ctx2D = canvasRef.current!.getContext(`2d`)!
-  //     canvasContext.current = ctx2D
-  //   } else {
-  //     console.log("WAIT - canvas not loaded")
-  //   }
-  // }, [])
 
 
   return (
