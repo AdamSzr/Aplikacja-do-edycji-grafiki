@@ -6,6 +6,7 @@ import { BACKGROUND } from '../theme/colors'
 import { ImageEditorContext } from './ImageEditor'
 import CompressImageTool from './Tools/CompressImageTool'
 import { DiffComponent } from './Tools/DiffComponent'
+import DrawOnBoard from './Tools/DrawOnBoard'
 import RemoveBackground from './Tools/RemoveBackground'
 
 const NavMenu = () => {
@@ -54,7 +55,8 @@ const NavMenu = () => {
         <>
             <nav className={style.navMenu}>
                 {!ctx.originalFile && <input type='file' onChange={onFileInputChange} />}
-
+               
+                <Button onClick={() => ctx.setTool(<DrawOnBoard />)} > Paint </Button>
                 {
                     ctx.originalFile && <>
                         <Button onClick={() => ctx.setTool(<CompressImageTool />)}> kompresja </Button>

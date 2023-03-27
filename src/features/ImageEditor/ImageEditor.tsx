@@ -62,7 +62,7 @@ const ImageEditor = () => {
                     <NavMenu />
                 </ContentContainer>
 
-                {tool && originalFile &&
+                {tool &&
                     <ContentContainer>
                         {tool}
                     </ContentContainer>}
