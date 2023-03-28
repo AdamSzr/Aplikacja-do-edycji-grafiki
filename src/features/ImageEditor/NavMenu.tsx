@@ -18,7 +18,10 @@ const NavMenu = () => {
         const imageFile = e.target.files[0];
         ctx.setOriginalFile(imageFile)
         const [htmlImageElement, canvas] = await imageCompression.drawFileInCanvas(imageFile)
-        ctx.canvas.current?.getContext(`2d`)?.drawImage(htmlImageElement, 0, 0)
+        // await Promise.resolve(() => ctx.canvasContext.current?.drawImage(htmlImageElement, 0, 0))
+        setTimeout(() => {
+            ctx.canvasContext.current?.drawImage(htmlImageElement, 0, 0)
+        }, 100)
         ctx.setFileName(imageFile.name)
         ctx.setCanvasSize({ w: canvas.width, h: canvas.height })
         ctx.setActiveFile('original')
@@ -55,7 +58,7 @@ const NavMenu = () => {
         <>
             <nav className={style.navMenu}>
                 {!ctx.originalFile && <input type='file' onChange={onFileInputChange} />}
-               
+
                 <Button onClick={() => ctx.setTool(<DrawOnBoard />)} > Paint </Button>
                 {
                     ctx.originalFile && <>
@@ -65,7 +68,7 @@ const NavMenu = () => {
                     </>
                 }
                 {ctx.processedFile && <>
-                    <Button onClick={()=>ctx.setTool(<DiffComponent/>)}>diff</Button>
+                    <Button onClick={() => ctx.setTool(<DiffComponent />)}>diff</Button>
                     <Button onClick={onDownloadClick}>download</Button>
                     <Button onClick={clearData} >Wyczyść dane</Button>
                 </>

@@ -40,8 +40,9 @@ const ImageEditor = () => {
 
 
     useEffect(() => {
-        if (canvasRef.current != null)
+        if (canvasRef.current != null) {
             canvasContextRef.current = canvasRef.current.getContext('2d')
+        }
     }, [canvasRef.current])
 
 
