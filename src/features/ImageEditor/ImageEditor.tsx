@@ -75,15 +75,11 @@ const ImageEditor = () => {
                 {tool &&
                     <ContentContainer>
                         {tool}
-                    </ContentContainer>}
-
-                {
-                    canvasSize &&
-                    <ContentContainer>
-                        <ImageBlackboard />
                     </ContentContainer>
                 }
 
+
+                <ImageBlackboard />
             </div>
         </ImageEditorContext.Provider>
     )

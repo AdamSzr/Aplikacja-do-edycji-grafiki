@@ -4,6 +4,7 @@ import React, { useContext } from 'react'
 import { createUseStyles } from 'react-jss'
 import { BACKGROUND } from '../theme/colors'
 import { ImageEditorContext } from './ImageEditor'
+import CanvasResize from './Tools/CanvasResize'
 import CompressImageTool from './Tools/CompressImageTool'
 import { DiffComponent } from './Tools/DiffComponent'
 import DrawOnBoard from './Tools/DrawOnBoard'
@@ -18,7 +19,6 @@ const NavMenu = () => {
         const imageFile = e.target.files[0];
         ctx.setOriginalFile(imageFile)
         const [htmlImageElement, canvas] = await imageCompression.drawFileInCanvas(imageFile)
-        // await Promise.resolve(() => ctx.canvasContext.current?.drawImage(htmlImageElement, 0, 0))
         setTimeout(() => {
             ctx.canvasContext.current?.drawImage(htmlImageElement, 0, 0)
         }, 100)
@@ -60,6 +60,7 @@ const NavMenu = () => {
                 {!ctx.originalFile && <input type='file' onChange={onFileInputChange} />}
 
                 <Button onClick={() => ctx.setTool(<DrawOnBoard />)} > Paint </Button>
+                {/* <Button onClick={() => ctx.setTool(<CanvasResize />)} > Resize </Button> */}
                 {
                     ctx.originalFile && <>
                         <Button onClick={() => ctx.setTool(<CompressImageTool />)}> kompresja </Button>

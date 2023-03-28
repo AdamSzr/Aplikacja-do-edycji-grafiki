@@ -1,7 +1,9 @@
 import { Button, LinearProgress, Slider, Typography } from '@mui/material';
 import imageCompression, { Options } from 'browser-image-compression';
 import React, { useContext, useState } from 'react'
+import ImageBlackboard from '../ImageBlackboard';
 import { ImageEditorContext } from '../ImageEditor';
+import FileSizeDisplay from './FileSizeDisplay';
 import LinearProgressWithLabel from './LinearProgressWithLabel';
 
 const CompressImageTool = () => {
@@ -10,9 +12,12 @@ const CompressImageTool = () => {
     const [compressionProgress, setCompressionProgress] = useState<number>(0)
     const [inProgress, setInProgress] = useState<boolean>(false)
     const [compressOpt, setCompressOpt] = useState<Options>({
-        maxSizeMB: (ctx.originalFile?.size ?? 0) / oneMb,
+        // maxSizeMB: (ctx.originalFile?.size ?? 0) / oneMb,
+        // maxWidthOrHeight: 500,
+        maxSizeMB: Infinity,
         useWebWorker: true,
-        // alwaysKeepResolution: true,
+        alwaysKeepResolution: true,
+        maxIteration: 1000,
         onProgress: (e) => {
             setCompressionProgress(e)
             if (e == 100)
@@ -23,6 +28,7 @@ const CompressImageTool = () => {
 
 
     const compressionStrength = (procentage: number) => {
+        console.log((ctx.originalFile?.size ?? 0) * (0.01 * procentage) / oneMb)
         setCompressOpt(acc => {
             const nv = ({ ...acc, maxSizeMB: (ctx.originalFile?.size ?? 0) * (0.01 * procentage) / oneMb })
             return nv
@@ -54,10 +60,10 @@ const CompressImageTool = () => {
                 <Slider
                     size="small"
                     max={100}
-                    min={0}
+                    min={60}
                     defaultValue={70}
                     aria-label="Small"
-                    valueLabelDisplay="auto"
+                    valueLabelDisplay="on"
                     onChange={(e) => compressionStrength(Number((e.target as any).value))}
 
                 />
@@ -65,6 +71,8 @@ const CompressImageTool = () => {
             {inProgress == true && <LinearProgressWithLabel value={compressionProgress} />}
             <Typography>
                 CompressImageTool</Typography>
+            <FileSizeDisplay />            <FileSizeDisplay forFile='processed' />
+            <FileSizeDisplay value={(compressOpt.maxSizeMB ?? 0) * 1_000_000} />
             <Button onClick={onCompressClick}>
                 start
             </Button>

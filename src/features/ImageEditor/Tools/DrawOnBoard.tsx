@@ -1,5 +1,6 @@
 
 import React, { useContext, useEffect, useRef, useState } from 'react'
+import ImageBlackboard from '../ImageBlackboard'
 import { ImageEditorContext } from '../ImageEditor'
 
 type Point = { x: number, y: number }
@@ -52,8 +53,6 @@ const DrawOnBoard = () => {
   return (
     <div>
       <button onClick={() => { console.log('trzeba zaladowac plik') }} > zaladuj plik z pamieci </button>
-
-
     </div >
 
   )
