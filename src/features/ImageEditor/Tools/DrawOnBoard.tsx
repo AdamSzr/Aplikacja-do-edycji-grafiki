@@ -11,9 +11,19 @@ const DrawOnBoard = () => {
 
 
   useEffect(() => {
-    canvas.current?.addEventListener('mousemove', (it) => { showCords(it); })
-    canvas.current?.addEventListener('mouseup', () => { isDrawing.current = (false); lastPointPos.current = undefined })
-    canvas.current?.addEventListener('mousedown', () => { isDrawing.current = (true) })
+    const onMuseMove = (it: MouseEvent) => { showCords(it) }
+    const onMouseUp = () => { isDrawing.current = (false); lastPointPos.current = undefined }
+    const onMouseDown = () => { isDrawing.current = (true) }
+    canvas.current?.addEventListener('mousemove', onMuseMove)
+    canvas.current?.addEventListener('mouseup', onMouseUp)
+    canvas.current?.addEventListener('mousedown', onMouseDown)
+    return () => {
+
+      canvas.current?.removeEventListener('mousemove', onMuseMove)
+      canvas.current?.removeEventListener('mouseup', onMouseUp)
+      canvas.current?.removeEventListener('mousedown', onMouseDown)
+
+    }
   }, [])
 
 
