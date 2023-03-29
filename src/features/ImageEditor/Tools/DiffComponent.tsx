@@ -1,5 +1,5 @@
 import imageCompression from 'browser-image-compression'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { PropsWithChildren, useContext, useEffect, useRef, useState } from 'react'
 import { ImageEditorContext } from '../ImageEditor'
 
 export const DiffComponent = () => {
@@ -7,23 +7,41 @@ export const DiffComponent = () => {
     const [element, setElement] = useState<null | JSX.Element>()
     const orginalRef = useRef<HTMLCanvasElement>()
     const processedRef = useRef<HTMLCanvasElement>()
+    const [oimgElement, setOImgElement] = useState<JSX.Element | null>(<div> 1234</div>)
+
+    const [pimgElement, setPImgElement] = useState<HTMLImageElement | null>()
 
     useEffect(() => {
+
         const promiseTable = [imageCompression.drawFileInCanvas(ctx.originalFile!), imageCompression.drawFileInCanvas(ctx.processedFile!)]
 
         ctx.canvas.current!.style.display = "none"
 
         console.log("hide")
         Promise.all(promiseTable).then((e) => {
-            const orginalImg = e.at(0)
-            const processedImg = e.at(1)
+            const oryginalImg = e.at(0)!
+            const processedImg = e.at(1)!
+            console.log({ orginalImg: oryginalImg, processedImg })
 
-            const orgImgBitmap: ImageBitmap = (orginalImg!.at(0) as ImageBitmap)
-            const procImgBitmap: ImageBitmap = (processedImg!.at(0) as ImageBitmap)
+            if (!window) return
+
+            // const imgOryginal = document.createElement('img')
+            // oryginalImg?.[1].getContext(`2d`)?.drawImage(imgOryginal, oryginalImg[0].width, oryginalImg?.[0].height)
+            // setOImgElement(imgOryginal)
+            // console.log(imgOryginal, typeof imgOryginal)
+            // const procImg = document.createElement('img')
+            // processedImg?.[1].getContext(`2d`)?.drawImage(procImg, processedImg[0].width, processedImg?.[0].height)
+            // setPImgElement(procImg)
+
+            // setOImgElement(orginalImg.at(0) ?? null)
+            // setPImgElement(setPImgElement)
+            const orgImgBitmap: ImageBitmap = (oryginalImg[0] as ImageBitmap)
+            const procImgBitmap: ImageBitmap = (processedImg[0] as ImageBitmap)
+
 
             orginalRef.current?.getContext(`2d`)?.drawImage(orgImgBitmap, 0, 0)
             processedRef.current?.getContext(`2d`)?.drawImage(procImgBitmap, 0, 0)
-            console.log({ processedImg, pp: orginalImg!.at(0), orginalImg, oi: orginalImg!.at(0), e })
+            console.log({ processedImg, pp: procImgBitmap, oi: orgImgBitmap })
 
         })
         return () => {
@@ -34,18 +52,29 @@ export const DiffComponent = () => {
 
     }, [])
 
+    const ImageContainer = ({ children }: PropsWithChildren) => {
+        return <div style={{
+            display: `flex`,
+            // width: `50%`,
+            flexDirection: `column`
+
+        }}>
+            {children}
+        </div>
+    }
 
     return (
-        <div>
-            <div>
+        <div style={{ display: 'grid', gridTemplateColumns: "1fr 1fr", gridGap: '10px' }}>
+            <ImageContainer>
                 <h2> Oryginalny obraz</h2>
-                <canvas ref={orginalRef as any} width={ctx.canvasSize?.w} height={ctx.canvasSize?.h} />
-            </div>
-            <div>
+                {/* {oimgElement} */}
+                <canvas ref={orginalRef as any} width={ctx.canvasSize?.w} style={{ aspectRatio: 'auto', width: '100%' }} height={ctx.canvasSize?.h} />
+            </ImageContainer>
+            <ImageContainer>
 
                 <h2 > Skompresowany o obraz</h2>
-                <canvas ref={processedRef as any} width={ctx.canvasSize?.w} height={ctx.canvasSize?.h} />
-            </div>
+                <canvas ref={processedRef as any} width={ctx.canvasSize?.w} style={{ aspectRatio: 'auto', width: '100%' }} height={ctx.canvasSize?.h} />
+            </ImageContainer>
         </div>
     )
 }
