@@ -11,28 +11,27 @@ const ImageBlackboard = () => {
     const ctx = useContext(ImageEditorContext)
 
     useEffect(() => {
-        // console.log("loading - image")
-        // if (ctx.originalFile == undefined)
-        //     return
+        console.log("loading - image")
+        if (ctx.originalFile == undefined)
+            return
 
-        // const showOriginal = ctx.activeFile == 'original'
+        const showOriginal = ctx.activeFile == 'original'
 
-        // imageCompression.drawFileInCanvas(showOriginal ? ctx.originalFile! : ctx.processedFile!)
-        //     .then(
-        //         ([imgEle, offsetCanvas]) => {
-        //             const canvas = ctx.canvas
-        //             const baseCtx = canvas.current?.getContext(`2d`)
-        //             console.log('drawing original')
-        //             const sizes = { w: imgEle.width, h: imgEle.height }
-        //             ctx.setCanvasSize(sizes)
-        //             baseCtx?.clearRect(0, 0, sizes.w, sizes.h)
+        imageCompression.drawFileInCanvas(showOriginal ? ctx.originalFile! : ctx.processedFile!)
+            .then(
+                ([imgEle, offsetCanvas]) => {
+                    const baseCtx = ctx.canvasContext.current
+                    console.log('drawing original')
+                    const sizes = { w: imgEle.width, h: imgEle.height }
+                    ctx.setCanvasSize(sizes)
+                    baseCtx?.clearRect(0, 0, sizes.w, sizes.h)
 
-        //             setTimeout(() => {
-        //                 baseCtx?.drawImage(imgEle, 0, 0)
-        //             }, 200);
+                    setTimeout(() => {
+                        baseCtx?.drawImage(offsetCanvas, 0, 0)
+                    }, 200);
 
-        //         }
-        //     )
+                }
+            )
 
     }, [ctx.activeFile])
 

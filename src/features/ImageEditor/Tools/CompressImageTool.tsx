@@ -72,7 +72,7 @@ const CompressImageTool = () => {
                 />
             </div>
             {inProgress == true && <LinearProgressWithLabel value={compressionProgress} />}
-            <FileSizeDisplay />
+            <FileSizeDisplay value={ctx.originalFile?.size} />
             <FileSizeDisplay text='Oczekiwana wielość pliku: ' value={(compressOpt.maxSizeMB ?? 0) * 1_000_000} />
             <FileSizeDisplay text="Skompresowany plik waży:" forFile='processed' />
             <Button disabled={inProgress} onClick={onCompressClick}>
