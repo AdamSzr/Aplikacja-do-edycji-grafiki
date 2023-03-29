@@ -7,7 +7,7 @@ import FileSizeDisplay from './FileSizeDisplay';
 import LinearProgressWithLabel from './LinearProgressWithLabel';
 
 const CompressImageTool = () => {
-    const oneMb = 1048576
+    const oneMb = 1_000_000
     const ctx = useContext(ImageEditorContext)
     const [compressionProgress, setCompressionProgress] = useState<number>(0)
     const [inProgress, setInProgress] = useState<boolean>(false)
@@ -28,7 +28,8 @@ const CompressImageTool = () => {
 
 
     const compressionStrength = (procentage: number) => {
-        console.log((ctx.originalFile?.size ?? 0) * (0.01 * procentage) / oneMb)
+
+        console.log({ procentage, originalSiz: ctx.originalFile?.size, expectedSiz: (ctx.originalFile?.size ?? 0) * (0.01 * procentage) / oneMb })
         setCompressOpt(acc => {
             const nv = ({ ...acc, maxSizeMB: (ctx.originalFile?.size ?? 0) * (0.01 * procentage) / oneMb })
             return nv
@@ -60,22 +61,34 @@ const CompressImageTool = () => {
                 <Slider
                     size="small"
                     max={100}
-                    min={60}
+                    min={30}
+                    disabled={inProgress}
                     defaultValue={70}
                     aria-label="Small"
                     valueLabelDisplay="on"
+                    valueLabelFormat={(value) => `${value}%`}
                     onChange={(e) => compressionStrength(Number((e.target as any).value))}
 
                 />
             </div>
             {inProgress == true && <LinearProgressWithLabel value={compressionProgress} />}
-            <Typography>
-                CompressImageTool</Typography>
-            <FileSizeDisplay />            <FileSizeDisplay forFile='processed' />
-            <FileSizeDisplay value={(compressOpt.maxSizeMB ?? 0) * 1_000_000} />
-            <Button onClick={onCompressClick}>
+            <FileSizeDisplay />
+            <FileSizeDisplay text='Oczekiwana wielość pliku: ' value={(compressOpt.maxSizeMB ?? 0) * 1_000_000} />
+            <FileSizeDisplay text="Skompresowany plik waży:" forFile='processed' />
+            <Button disabled={inProgress} onClick={onCompressClick}>
                 start
             </Button>
+
+            {
+                ctx.processedFile && <>
+                    <Button disabled={ctx.activeFile == 'original'} onClick={() => { ctx.setActiveFile('original') }} >
+                        pokaż oryginalne zdjęcie
+                    </Button>
+                    <Button disabled={ctx.activeFile == 'processed'} onClick={() => { ctx.setActiveFile('processed') }}>
+                        pokaż skompresowane zdjęcie
+                    </Button>
+                </>
+            }
         </div>
     )
 }
