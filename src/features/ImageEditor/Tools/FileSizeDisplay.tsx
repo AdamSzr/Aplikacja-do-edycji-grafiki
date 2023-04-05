@@ -12,11 +12,7 @@ const FileSizeDisplay: FC<{ forFile?: ActiveFile, value?: number, text?: string 
     }
 
     return (
-
-        <>
-            <h2>{text} {parseSizeToHumanReadable(sizeInBytes)}</h2>
-        </>
-
+        <h2>{text} {parseSizeToHumanReadable(sizeInBytes)}</h2>
     )
 }
 

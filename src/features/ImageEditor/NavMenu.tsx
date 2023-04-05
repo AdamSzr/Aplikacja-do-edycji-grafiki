@@ -65,6 +65,7 @@ const NavMenu = () => {
                     ctx.originalFile && <>
                         <Button onClick={() => ctx.setTool(<CompressImageTool />)}> kompresja </Button>
                         <Button onClick={() => ctx.setTool(<RemoveBackground />)}> usuwanie tla </Button>
+                        <Button onClick={() => ctx.setTool(< CanvasResize />)} > zmiana rozmiaru</Button>
                         <Button onClick={clearData} >Wyczyść dane</Button>
                     </>
                 }

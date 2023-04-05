@@ -10,8 +10,9 @@ const DownloadBtn = () => {
 
     const downloadClicked = () => {
         if (ctx.canvasContext.current) {
-            window.URL.createObjectURL(ctx.processedFile!)
-            const file = window.URL.createObjectURL(ctx.processedFile!) // ctx.canvas.current!.toDataURL(`png`)
+            window.URL.createObjectURL(ctx.processedFile ?? ctx.originalFile!)
+            ctx.canvas.current?.toDataURL()
+            const file = ctx.canvas.current?.toDataURL()! //window.URL.createObjectURL(ctx.processedFile ?? ctx.originalFile!) // ctx.canvas.current!.toDataURL(`png`)
             const aEle = document.createElement('a')
             aEle.href = file
             aEle.download = ctx.fileName ?? "output.png"
@@ -19,7 +20,7 @@ const DownloadBtn = () => {
             return
         }
 
-  
+
 
         console.log(`download`)
     }

@@ -41,7 +41,7 @@ const ImageBlackboard = () => {
 
     return (
         <div className={style.imageBoard}>
-            <canvas width={ctx.canvasSize?.w} height={ctx.canvasSize?.h} style={{ border: '2px solid black', aspectRatio: 'auto', maxWidth: '100%' }} ref={ctx.canvas as any} />
+            <canvas width={ctx.canvasSize?.w}  height={ctx.canvasSize?.h} style={{ border: '2px solid black', aspectRatio: 'auto', maxWidth: '100%' }} ref={ctx.canvas as any} />
         </div>
     )
 }
