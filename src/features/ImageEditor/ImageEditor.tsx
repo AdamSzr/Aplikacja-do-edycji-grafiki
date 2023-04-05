@@ -6,6 +6,7 @@ import ImageBlackboard from './ImageBlackboard';
 import { createUseStyles } from 'react-jss';
 import { BACKGROUND } from '../theme/colors';
 import ContentContainer from '../ContentContainer/ContentContainer';
+import DownloadBtn from '../DownloadBtn';
 
 export type CanvasSize = { w: number, h: number }
 export type ActiveFile = "original" | 'processed' | undefined
@@ -67,6 +68,7 @@ const ImageEditor = () => {
     return (
         <ImageEditorContext.Provider value={contextValue} >
             <div className={style.layoutStyle + ' layout'}>
+                <DownloadBtn />
 
                 <ContentContainer>
                     <NavMenu />

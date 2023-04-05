@@ -1,7 +1,6 @@
 import { Button, LinearProgress, Slider, Typography } from '@mui/material';
 import imageCompression, { Options } from 'browser-image-compression';
 import React, { useContext, useState } from 'react'
-import ImageBlackboard from '../ImageBlackboard';
 import { ImageEditorContext } from '../ImageEditor';
 import FileSizeDisplay from './FileSizeDisplay';
 import LinearProgressWithLabel from './LinearProgressWithLabel';

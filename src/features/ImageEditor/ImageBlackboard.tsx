@@ -21,7 +21,7 @@ const ImageBlackboard = () => {
             .then(
                 ([imgEle, offsetCanvas]) => {
                     const baseCtx = ctx.canvasContext.current
-                    console.log('drawing original')
+                    console.log(`drawing ${ctx.activeFile}`)
                     const sizes = { w: imgEle.width, h: imgEle.height }
                     ctx.setCanvasSize(sizes)
                     baseCtx?.clearRect(0, 0, sizes.w, sizes.h)

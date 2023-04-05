@@ -40,7 +40,7 @@ const NavMenu = () => {
     }
 
     const onDownloadClick = () => {
-        downloadFile()
+        // downloadFile()
     }
 
     const clearData = () => {
@@ -70,7 +70,6 @@ const NavMenu = () => {
                 }
                 {ctx.processedFile && <>
                     <Button onClick={() => ctx.setTool(<DiffComponent />)}>diff</Button>
-                    <Button onClick={onDownloadClick}>download</Button>
                     <Button onClick={clearData} >Wyczyść dane</Button>
                 </>
                 }
