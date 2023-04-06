@@ -44,9 +44,7 @@ const RemoveBackground = () => {
 
 
   const backgroundRemoval = async () => {
-    // console.log(`removal`)
 
-    // return
 
     if (!canvasRef || !canvasRef.current)
       return
@@ -55,11 +53,11 @@ const RemoveBackground = () => {
     const net = await bodyPix.load({
       architecture: 'MobileNetV1', //ResNet50
       outputStride: 16,
-      quantBytes: 2
+      quantBytes: 1
     })
     const segmentation = await net.segmentPerson(canvas, {
       internalResolution: 'medium',
-      segmentationThreshold: 0.5,
+      segmentationThreshold: 0.7,
       //   scoreTreshold: 0.7
     })
 

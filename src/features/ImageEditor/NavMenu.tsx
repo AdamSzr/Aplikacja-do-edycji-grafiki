@@ -2,13 +2,13 @@ import { Box, Button, Paper, Typography } from '@mui/material'
 import imageCompression, { Options } from 'browser-image-compression'
 import React, { useContext } from 'react'
 import { createUseStyles } from 'react-jss'
-import { BACKGROUND } from '../theme/colors'
 import { ImageEditorContext } from './ImageEditor'
 import CanvasResize from './Tools/CanvasResize'
 import CompressImageTool from './Tools/CompressImageTool'
 import { DiffComponent } from './Tools/DiffComponent'
 import DrawOnBoard from './Tools/DrawOnBoard'
 import RemoveBackground from './Tools/RemoveBackground'
+import { BACKGROUND } from '../theme/colors'
 
 const NavMenu = () => {
     const ctx = useContext(ImageEditorContext)

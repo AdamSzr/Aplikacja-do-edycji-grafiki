@@ -1,14 +1,16 @@
-import { Button, createStyles } from '@mui/material'
+import { Button, IconButton, createStyles } from '@mui/material'
 import React, { useContext } from 'react'
 import { ImageEditorContext } from './ImageEditor/ImageEditor'
-
-
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+import { BACKGROUND } from './theme/colors';
 
 const DownloadBtn = () => {
 
     const ctx = useContext(ImageEditorContext)
 
     const downloadClicked = () => {
+
+        console.log(`download`)
         if (ctx.canvasContext.current) {
             // window.URL.createObjectURL(ctx.processedFile ?? ctx.originalFile!)
             // ctx.canvas.current?.toDataURL()
@@ -23,15 +25,17 @@ const DownloadBtn = () => {
             aEle.click()
             return
         }
+        else {
+            console.log({ canvasCtx: ctx.canvasContext.current })
+        }
 
 
 
-        console.log(`download`)
     }
 
     return (
         <>
-            <Button variant='contained' color='secondary' style={{ position: `fixed`, top: "100px", right: '100px' }} onClick={downloadClicked}>Pobierz</Button>
+            <IconButton onClick={downloadClicked} style={{ position: `fixed`, top: "20px", right: '20px', backgroundColor: BACKGROUND.accentGreen }}><DownloadForOfflineIcon /></IconButton>
         </>
     )
 }

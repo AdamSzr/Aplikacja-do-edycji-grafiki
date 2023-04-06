@@ -3,14 +3,17 @@ import imageCompression from 'browser-image-compression'
 import React, { useContext, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import { ImageEditorContext } from './ImageEditor'
-
-
+import { IconButton } from '@mui/material'
+import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 
 const ImageBlackboard = () => {
     const style = useStyles()
     const ctx = useContext(ImageEditorContext)
 
+
     useEffect(() => {
+
+
         console.log("loading - image")
         if (ctx.originalFile == undefined)
             return
@@ -37,11 +40,20 @@ const ImageBlackboard = () => {
 
 
 
+    const cleanCanvas = () => {
+        ctx.canvasContext.current?.clearRect(0, 0, ctx.canvasSize!.w, ctx.canvasSize!.h)
+    }
+
 
 
     return (
         <div className={style.imageBoard}>
-            <canvas width={ctx.canvasSize?.w}  height={ctx.canvasSize?.h} style={{ border: '2px solid black', aspectRatio: 'auto', maxWidth: '100%' }} ref={ctx.canvas as any} />
+            <div style={{ display: 'flex' }}>
+                <canvas width={ctx.canvasSize?.w} height={ctx.canvasSize?.h} style={{ border: '2px solid black', aspectRatio: 'auto', maxWidth: '100%' }} ref={ctx.canvas as any} />
+                <div >
+                    <IconButton onClick={cleanCanvas}> <CleaningServicesIcon fontSize="inherit" /></IconButton>
+                </div>
+            </div>
         </div>
     )
 }
