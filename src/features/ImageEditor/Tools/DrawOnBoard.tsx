@@ -2,16 +2,25 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import ImageBlackboard from '../ImageBlackboard'
 import { ImageEditorContext } from '../ImageEditor'
+import imageCompression from 'browser-image-compression'
 
 type Point = { x: number, y: number }
 
 const DrawOnBoard = () => {
-  const { canvas, canvasContext } = useContext(ImageEditorContext)
+  const ctx = useContext(ImageEditorContext)
+  const { canvas, canvasContext } = ctx
   const lastPointPos = useRef<Point>()
   const isDrawing = useRef<boolean>(false)
 
 
   useEffect(() => {
+
+    imageCompression.canvasToFile(canvas.current!, '', '', 1).then(file => {
+      ctx.setOriginalFile(file)
+      ctx.setActiveFile('original')
+    })
+    // URL.createObjectURL(await imageCompression.canvasToFile(canvas.current))
+
     const onMuseMove = (it: MouseEvent) => { showCords(it) }
     const onMouseUp = () => { isDrawing.current = (false); lastPointPos.current = undefined }
     const onMouseDown = () => { isDrawing.current = (true) }
@@ -51,10 +60,7 @@ const DrawOnBoard = () => {
 
 
   return (
-    <div>
-      <button onClick={() => { console.log('trzeba zaladowac plik') }} > zaladuj plik z pamieci </button>
-    </div >
-
+    <></>
   )
 }
 

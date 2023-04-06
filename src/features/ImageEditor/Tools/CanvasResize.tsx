@@ -37,10 +37,13 @@ const CanvasResize = () => {
 
     return (
         <div>
-            <div>CanvasResize with aspect ratio</div>
-            <Button onClick={draw} > rysuj </Button>
-            <Slider min={100} name="width-slider" defaultValue={oryginalSize?.w} valueLabelDisplay='on' onChange={handleSliderChange} max={1920} > szerokość</Slider>
-            <Slider min={100} name="height-slider" defaultValue={oryginalSize?.h} valueLabelDisplay='on' onChange={handleSliderChange} max={1080}> długość</Slider>
+            {/* <Button onClick={draw} > rysuj </Button> */}
+            <div>
+                Szerokość
+                <Slider min={100} name="width-slider" defaultValue={oryginalSize?.w} valueLabelDisplay='on' onChange={handleSliderChange} max={1920} > szerokość</Slider>
+                Wysokość
+                <Slider min={100} name="height-slider" defaultValue={oryginalSize?.h} valueLabelDisplay='on' onChange={handleSliderChange} max={1080}> długość</Slider>
+            </div>
         </div >
     )
 }
