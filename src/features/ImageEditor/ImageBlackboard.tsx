@@ -5,15 +5,16 @@ import { createUseStyles } from 'react-jss'
 import { ImageEditorContext } from './ImageEditor'
 import { IconButton } from '@mui/material'
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
+import { ToolType } from './NavMenu'
 
 const ImageBlackboard = () => {
     const style = useStyles()
     const ctx = useContext(ImageEditorContext)
+    const hideWhenView: ToolType[] = ['background-remove']
 
+    const shouldHide = ctx.toolName ? hideWhenView.includes(ctx.toolName) : true
 
     useEffect(() => {
-
-
         console.log("loading - image")
         if (ctx.originalFile == undefined)
             return
@@ -47,7 +48,7 @@ const ImageBlackboard = () => {
 
 
     return (
-        <div className={style.imageBoard}>
+        <div className={style.imageBoard} style={shouldHide ? { display: "none" } : undefined}>
             <div style={{ display: 'flex' }}>
                 <canvas width={ctx.canvasSize?.w} height={ctx.canvasSize?.h} style={{ border: '2px solid black', aspectRatio: 'auto', maxWidth: '100%' }} ref={ctx.canvas as any} />
                 <div >
