@@ -79,11 +79,24 @@ const RemoveBackground = () => {
   }
 
   return (
-    <div>RemoveBackground
+    <div>
 
-      <canvas ref={canvasRef as any} />
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ margin: "0 auto" }}>
+          <canvas ref={canvasRef as any} />
+        </div>
+        <div style={{
+          display: `flex`,
+          justifyContent: `center`
+        }}>
+
+          <button onClick={backgroundRemoval}> usuń tło </button>
+        </div >
+      </div>
+
+
       {/* <ImageBlackboard /> */}
-      <button onClick={backgroundRemoval} > remove </button>
+
 
     </div>
   )

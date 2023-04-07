@@ -51,7 +51,7 @@ const ImageBlackboard = () => {
         <div className={style.imageBoard} style={shouldHide ? { display: "none" } : undefined}>
             <div style={{ display: 'flex' }}>
                 <canvas width={ctx.canvasSize?.w} height={ctx.canvasSize?.h} style={{ border: '2px solid black', aspectRatio: 'auto', maxWidth: '100%' }} ref={ctx.canvas as any} />
-                <div >
+                <div style={ctx.toolName != 'draw' ? { display: 'none' } : undefined}>
                     <IconButton onClick={cleanCanvas}> <CleaningServicesIcon fontSize="inherit" /></IconButton>
                 </div>
             </div>

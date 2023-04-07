@@ -11,7 +11,7 @@ import RemoveBackground from './Tools/RemoveBackground'
 import { BACKGROUND } from '../theme/colors'
 
 
-export type ToolType = "img-resize" | "compression" | "draw" | "background-remove" | 'diff'
+export type ToolType = "img-resize" | "compression" | "draw" | "background-remove" | 'diff' | "view"
 
 const NavMenu = () => {
     const ctx = useContext(ImageEditorContext)
@@ -28,6 +28,7 @@ const NavMenu = () => {
         ctx.setFileName(imageFile.name)
         ctx.setCanvasSize({ w: canvas.width, h: canvas.height })
         ctx.setActiveFile('original')
+        ctx.setToolName('view')
     }
 
     const downloadFile = () => {
@@ -53,6 +54,7 @@ const NavMenu = () => {
         ctx.setProcessedFile(null)
         ctx.setTool(null)
         ctx.setFileName(null)
+        ctx.setToolName(null)
     }
 
 

@@ -25,7 +25,7 @@ export type ImageEditorContextType = {
     setFileName: (fileName: string | null) => void
     setTool: (tool: JSX.Element | null) => void
     toolName: ToolType | null
-    setToolName: (name: ToolType) => void
+    setToolName: (name: ToolType | null) => void
 }
 
 export const ImageEditorContext = createContext<ImageEditorContextType>({} as ImageEditorContextType)
@@ -68,7 +68,7 @@ const ImageEditor = () => {
         setToolName,
     }
 
-    console.log({ activeFile, canvasSize, ref: canvasRef.current, fileName, originalFile, processedFile })
+    console.log({ activeFile, canvasSize, ref: canvasRef.current, fileName, originalFile, processedFile, toolName })
 
     return (
         <ImageEditorContext.Provider value={contextValue} >
@@ -79,7 +79,7 @@ const ImageEditor = () => {
                     <NavMenu />
                 </ContentContainer>
 
-                {tool &&
+                {
                     <ContentContainer>
                         {tool}
                     </ContentContainer>
