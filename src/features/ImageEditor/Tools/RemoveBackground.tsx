@@ -10,6 +10,7 @@ import ImageBlackboard from '../ImageBlackboard';
 const RemoveBackground = () => {
   const ctx = useContext(ImageEditorContext)
   const canvasRef = useRef<HTMLCanvasElement>()
+  const [isProcessed, setIsProcessed] = useState(false)
 
   useEffect(() => {
     tf.setBackend('cpu')
@@ -30,6 +31,7 @@ const RemoveBackground = () => {
             baseCtx?.clearRect(0, 0, sizes.w, sizes.h)
 
             setTimeout(() => {
+
               baseCtx?.drawImage(imgEle, 0, 0)
             }, 200);
 
@@ -41,9 +43,45 @@ const RemoveBackground = () => {
 
   }, [])
 
+  const downloadProcessedImg = async () => {
+    if (!canvasRef.current) return
+    // const { width, height } = canvasRef.current
+    // const ctx2d = canvasRef.current.getContext('2d')
+    const processedCtx = canvasRef.current
+
+
+    // const cleanedImgFile = await imageCompression.getFilefromDataUrl(processedCtx.toDataURL(), '')
+
+    // const [imgEle, offsetCanvas] = await imageCompression.drawFileInCanvas(cleanedImgFile)
+
+
+    // ctx.canvasContext.current?.drawImage(offsetCanvas, 0, 0, width, height)
+
+    // console.log("DONE !")
+    // ctx.setOriginalFile(cleanedImgFile)
+
+    const aEle = document.createElement('a')
+    aEle.href = processedCtx.toDataURL()
+    aEle.download = ctx.fileName ?? "output.png"
+    aEle.click()
+    return
+
+    // ctx2d?.drawImage()
+    // ctx.canvasContext.current?.drawImage(ctx2d)
+    // const processedImg = ctx2d?.getImageData(0, 0, width, height)
+
+    // ctx.canvasContext.current?.drawImage(processedImg, 0, 0)
+    // window.URL.createObjectURL(processedImg)
+
+
+    // TODO: set as ctx.processedFile
+    // then, display btn download under img
+    // 
+  }
+
 
   const backgroundRemoval = async () => {
-
+    setIsProcessed(true)
 
     if (!canvasRef || !canvasRef.current)
       return
@@ -89,8 +127,8 @@ const RemoveBackground = () => {
           display: `flex`,
           justifyContent: `center`
         }}>
-
-          <button onClick={backgroundRemoval}> usuń tło </button>
+          <button style={isProcessed ? { display: 'none' } : undefined} onClick={backgroundRemoval}> usuń tło </button>
+          <button style={isProcessed ? undefined : { display: 'none' }} onClick={downloadProcessedImg}> pobierz </button>
         </div >
       </div>
 

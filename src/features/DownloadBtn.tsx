@@ -3,10 +3,16 @@ import React, { useContext } from 'react'
 import { ImageEditorContext } from './ImageEditor/ImageEditor'
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import { BACKGROUND } from './theme/colors';
+import { ToolType } from './ImageEditor/NavMenu';
 
 const DownloadBtn = () => {
 
     const ctx = useContext(ImageEditorContext)
+
+    const hideWhenView: ToolType[] = ['background-remove']
+
+    const shouldHide = ctx.toolName ? hideWhenView.includes(ctx.toolName) : true
+
 
     const downloadClicked = () => {
 
@@ -34,9 +40,9 @@ const DownloadBtn = () => {
     }
 
     return (
-        <>
+        <span style={shouldHide ? { display: "none" } : undefined}>
             <IconButton onClick={downloadClicked} style={{ position: `fixed`, top: "20px", right: '20px', backgroundColor: BACKGROUND.accentGreen }}><DownloadForOfflineIcon /></IconButton>
-        </>
+        </ span>
     )
 }
 
