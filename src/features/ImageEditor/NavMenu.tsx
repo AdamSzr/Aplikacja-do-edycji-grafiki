@@ -10,6 +10,9 @@ import DrawOnBoard from './Tools/DrawOnBoard'
 import RemoveBackground from './Tools/RemoveBackground'
 import { BACKGROUND } from '../theme/colors'
 
+
+export type ToolType = "img-resize" | "compression" | "draw" | "background-remove" | 'diff'
+
 const NavMenu = () => {
     const ctx = useContext(ImageEditorContext)
 
@@ -59,18 +62,18 @@ const NavMenu = () => {
             <nav className={style.navMenu}>
                 {!ctx.originalFile && <input type='file' onChange={onFileInputChange} />}
 
-                <Button onClick={() => ctx.setTool(<DrawOnBoard />)} > Paint </Button>
+                <Button onClick={() => { ctx.setTool(<DrawOnBoard />); ctx.setToolName('draw') }} > rysuj </Button>
                 {/* <Button onClick={() => ctx.setTool(<CanvasResize />)} > Resize </Button> */}
                 {
                     ctx.originalFile && <>
-                        <Button onClick={() => ctx.setTool(<CompressImageTool />)}> kompresja </Button>
-                        <Button onClick={() => ctx.setTool(<RemoveBackground />)}> usuwanie tla </Button>
-                        <Button onClick={() => ctx.setTool(< CanvasResize />)} > zmiana rozmiaru</Button>
+                        <Button onClick={() => { ctx.setTool(<CompressImageTool />); ctx.setToolName('compression') }}> kompresja </Button>
+                        <Button onClick={() => { ctx.setTool(<RemoveBackground />); ctx.setToolName('background-remove') }}> usuwanie tla </Button>
+                        <Button onClick={() => { ctx.setTool(< CanvasResize />); ctx.setToolName('img-resize') }} > zmiana rozmiaru</Button>
                         <Button onClick={clearData} >Wyczyść dane</Button>
                     </>
                 }
                 {ctx.processedFile && <>
-                    <Button onClick={() => ctx.setTool(<DiffComponent />)}>diff</Button>
+                    <Button onClick={() => { ctx.setTool(<DiffComponent />);; ctx.setToolName('diff') }}>diff</Button>
                     <Button onClick={clearData} >Wyczyść dane</Button>
                 </>
                 }

@@ -1,7 +1,7 @@
 import React, { createContext } from 'react'
 import imageCompression, { Options } from 'browser-image-compression';
 import { useEffect, useRef, useState } from 'react'
-import NavMenu from './NavMenu';
+import NavMenu, { ToolType } from './NavMenu';
 import ImageBlackboard from './ImageBlackboard';
 import { createUseStyles } from 'react-jss';
 import { BACKGROUND } from '../theme/colors';
@@ -24,6 +24,8 @@ export type ImageEditorContextType = {
     fileName: string | null,
     setFileName: (fileName: string | null) => void
     setTool: (tool: JSX.Element | null) => void
+    toolName: ToolType | null
+    setToolName: (name: ToolType) => void
 }
 
 export const ImageEditorContext = createContext<ImageEditorContextType>({} as ImageEditorContextType)
@@ -32,6 +34,7 @@ const ImageEditor = () => {
     const [originalFile, setOriginalFile] = useState<File | null>(null)
     const [processedFile, setProcessedFile] = useState<File | null>(null)
     const [activeFile, setActiveFile] = useState<ActiveFile | null>(null)
+    const [toolName, setToolName] = useState<ToolType | null>(null)
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const canvasContextRef = useRef<CanvasRenderingContext2D | null>(null)
     const [fileName, setFileName] = useState<string | null>(null)
@@ -61,6 +64,8 @@ const ImageEditor = () => {
         fileName,
         setFileName: (fileName: string | null) => setFileName(fileName),
         setTool: (tool: JSX.Element | null) => setTool(tool),
+        toolName,
+        setToolName,
     }
 
     console.log({ activeFile, canvasSize, ref: canvasRef.current, fileName, originalFile, processedFile })

@@ -14,8 +14,8 @@ const RemoveBackground = () => {
   useEffect(() => {
     tf.setBackend('cpu')
     if (canvasRef.current != undefined) {
-      const cvs = canvasRef.current
-      const ctx2d = cvs.getContext('2d')
+      // const cvs = canvasRef.current
+      // const ctx2d = cvs.getContext('2d')
 
       imageCompression.drawFileInCanvas(ctx.originalFile!)
         .then(
@@ -37,8 +37,7 @@ const RemoveBackground = () => {
         )
     }
 
-    // tf.ready().then(_ =>{
-    // })
+
 
   }, [])
 
