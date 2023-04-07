@@ -4,6 +4,7 @@ import React, { useContext, useState } from 'react'
 import { ImageEditorContext } from '../ImageEditor';
 import FileSizeDisplay from './FileSizeDisplay';
 import LinearProgressWithLabel from './LinearProgressWithLabel';
+import parseSizeToHumanReadable from '@/src/utils/parseSizeToHumanReadable';
 
 const CompressImageTool = () => {
     const oneMb = 1_000_000
@@ -71,9 +72,20 @@ const CompressImageTool = () => {
                 />
             </div>
             {inProgress == true && <LinearProgressWithLabel value={compressionProgress} />}
-            <FileSizeDisplay value={ctx.originalFile?.size} />
-            <FileSizeDisplay text='Oczekiwana wielość pliku: ' value={(compressOpt.maxSizeMB ?? 0) * 1_000_000} />
-            <FileSizeDisplay text="Skompresowany plik waży:" forFile='processed' />
+            <table>
+                <th>
+                    <td>plik</td>
+                    <td>rozmiar pliku</td>
+                </th>
+                <tr>
+                    <td>oryginalny</td>
+                    <td>{parseSizeToHumanReadable(ctx.originalFile?.size ?? 0)}</td>
+                </tr>
+                <tr>
+                    <td>oczekiwany</td>
+                    <td>{parseSizeToHumanReadable((compressOpt.maxSizeMB ?? 0) * 1_000_000)}</td>
+                </tr>
+            </table>
             <Button disabled={inProgress} onClick={onCompressClick}>
                 start
             </Button>
