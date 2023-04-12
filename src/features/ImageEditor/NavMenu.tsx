@@ -29,6 +29,7 @@ const NavMenu = () => {
         ctx.setCanvasSize({ w: canvas.width, h: canvas.height })
         ctx.setActiveFile('original')
         ctx.setToolName('view')
+        ctx.setPageName(`Edytujesz ${imageFile.name}`)
     }
 
     const downloadFile = () => {
@@ -80,11 +81,11 @@ const NavMenu = () => {
                 </>
                 }
             </nav>
-            {ctx.originalFile && <Box>
+            {/* {ctx.originalFile && <Box>
                 <Typography className={style.fileName}>
                     {`Edytujesz własnie`} <b>{ctx.fileName}</b>
                 </Typography>
-            </Box>}
+            </Box>} */}
         </>
     )
 }
@@ -94,6 +95,7 @@ export default NavMenu
 const useStyles = createUseStyles((theme) => {
     return ({
         navMenu: {
+            marginBottom: '10px',
             backgroundColor: BACKGROUND.secondary,
             minHeight: "50px",
             borderRadius: "0px 0px 20px 20px",

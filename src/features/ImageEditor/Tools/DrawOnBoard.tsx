@@ -1,6 +1,6 @@
 
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import ImageBlackboard from '../ImageBlackboard'
+import BlackboardImage from '../BlackboardImage'
 import { ImageEditorContext } from '../ImageEditor'
 import imageCompression from 'browser-image-compression'
 

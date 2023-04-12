@@ -1,7 +1,7 @@
 
 import { Button, Slider } from '@mui/material'
 import React, { useContext, useState } from 'react'
-import ImageBlackboard from '../ImageBlackboard'
+import BlackboardImage from '../BlackboardImage'
 import { ImageEditorContext } from '../ImageEditor'
 import CompressImageTool from './CompressImageTool'
 import imageCompression from 'browser-image-compression'

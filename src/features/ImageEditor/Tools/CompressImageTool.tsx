@@ -72,34 +72,42 @@ const CompressImageTool = () => {
                 />
             </div>
             {inProgress == true && <LinearProgressWithLabel value={compressionProgress} />}
-            <table>
-                <th>
-                    <td>plik</td>
-                    <td>rozmiar pliku</td>
-                </th>
-                <tr>
-                    <td>oryginalny</td>
-                    <td>{parseSizeToHumanReadable(ctx.originalFile?.size ?? 0)}</td>
-                </tr>
-                <tr>
-                    <td>oczekiwany</td>
-                    <td>{parseSizeToHumanReadable((compressOpt.maxSizeMB ?? 0) * 1_000_000)}</td>
-                </tr>
-            </table>
-            <Button disabled={inProgress} onClick={onCompressClick}>
-                start
-            </Button>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                {/* display: flex;
+    flex-direction: column;
+    align-items: center; */}
+                <table style={{
+                    // margin: `0 auto`
+                }} >
+                    <th>
+                        <td>plik</td>
+                        <td>rozmiar pliku</td>
+                    </th>
+                    <tr>
+                        <td>oryginalny</td>
+                        <td>{parseSizeToHumanReadable(ctx.originalFile?.size ?? 0)}</td>
+                    </tr>
+                    <tr>
+                        <td>oczekiwany</td>
+                        <td>{parseSizeToHumanReadable((compressOpt.maxSizeMB ?? 0) * 1_000_000)}</td>
+                    </tr>
+                </table>
+                <Button disabled={inProgress} onClick={onCompressClick}>
+                    start
+                </Button>
 
-            {
-                ctx.processedFile && <>
-                    <Button disabled={ctx.activeFile == 'original'} onClick={() => { ctx.setActiveFile('original') }} >
-                        pokaż oryginalne zdjęcie
-                    </Button>
-                    <Button disabled={ctx.activeFile == 'processed'} onClick={() => { ctx.setActiveFile('processed') }}>
-                        pokaż skompresowane zdjęcie
-                    </Button>
-                </>
-            }
+                {
+                    ctx.processedFile && <>
+                        <Button disabled={ctx.activeFile == 'original'} onClick={() => { ctx.setActiveFile('original') }} >
+                            pokaż oryginalne zdjęcie
+                        </Button>
+                        <Button disabled={ctx.activeFile == 'processed'} onClick={() => { ctx.setActiveFile('processed') }}>
+                            pokaż skompresowane zdjęcie
+                        </Button>
+                    </>
+                }
+
+            </div>
         </div>
     )
 }

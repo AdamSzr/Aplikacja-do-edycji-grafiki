@@ -1,15 +1,15 @@
 import { Button, IconButton, createStyles } from '@mui/material'
 import React, { useContext } from 'react'
-import { ImageEditorContext } from './ImageEditor/ImageEditor'
+import { ImageEditorContext } from './ImageEditor'
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
-import { BACKGROUND } from './theme/colors';
-import { ToolType } from './ImageEditor/NavMenu';
+import { BACKGROUND } from '../theme/colors';
+import { ToolType } from './NavMenu';
 
 const DownloadBtn = () => {
 
     const ctx = useContext(ImageEditorContext)
 
-    const hideWhenView: ToolType[] = ['background-remove']
+    const hideWhenView: ToolType[] = [] //['background-remove']
 
     const shouldHide = ctx.toolName ? hideWhenView.includes(ctx.toolName) : true
 

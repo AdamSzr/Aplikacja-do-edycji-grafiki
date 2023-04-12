@@ -2,15 +2,17 @@ import React, { createContext } from 'react'
 import imageCompression, { Options } from 'browser-image-compression';
 import { useEffect, useRef, useState } from 'react'
 import NavMenu, { ToolType } from './NavMenu';
-import ImageBlackboard from './ImageBlackboard';
+import BlackboardImage from './BlackboardImage';
 import { createUseStyles } from 'react-jss';
 import { BACKGROUND } from '../theme/colors';
 import ContentContainer from '../ContentContainer/ContentContainer';
-import DownloadBtn from '../DownloadBtn';
+import DownloadBtn from './DownloadBtn';
+import Head from 'next/head';
 
 export type CanvasSize = { w: number, h: number }
 export type ActiveFile = "original" | 'processed' | undefined
 export type ImageEditorContextType = {
+    setPageName: (newName: string) => void,
     originalFile: File | null,
     processedFile: File | null,
     setProcessedFile: (file: File | null) => void,
@@ -31,6 +33,7 @@ export type ImageEditorContextType = {
 export const ImageEditorContext = createContext<ImageEditorContextType>({} as ImageEditorContextType)
 
 const ImageEditor = () => {
+    const [pageName, setPageName] = useState<string>("Prymitywny edytor zdjęć")
     const [originalFile, setOriginalFile] = useState<File | null>(null)
     const [processedFile, setProcessedFile] = useState<File | null>(null)
     const [activeFile, setActiveFile] = useState<ActiveFile | null>(null)
@@ -51,6 +54,7 @@ const ImageEditor = () => {
 
 
     const contextValue: ImageEditorContextType = {
+        setPageName: (name) => setPageName(name),
         activeFile,
         setCanvasSize: (size) => setCanvasSize(size),
         canvasSize,
@@ -72,6 +76,11 @@ const ImageEditor = () => {
 
     return (
         <ImageEditorContext.Provider value={contextValue} >
+            <Head>
+                <title>
+                    {pageName}
+                </title>
+            </Head>
             <div className={style.layoutStyle + ' layout'}>
                 <DownloadBtn />
 
@@ -86,7 +95,7 @@ const ImageEditor = () => {
                 }
 
 
-                <ImageBlackboard />
+                <BlackboardImage />
             </div>
         </ImageEditorContext.Provider>
     )

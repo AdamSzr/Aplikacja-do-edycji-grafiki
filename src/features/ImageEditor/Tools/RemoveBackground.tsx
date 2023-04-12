@@ -1,21 +1,22 @@
 
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { ImageEditorContext } from '../ImageEditor'
+import { ImageEditorContext, ImageEditorContextType } from '../ImageEditor'
 import * as bodyPix from '@tensorflow-models/body-pix'
 import imageCompression from 'browser-image-compression'
 
 import * as tf from '@tensorflow/tfjs';
-import ImageBlackboard from '../ImageBlackboard';
+import BlackboardImage from '../BlackboardImage';
 import { ModelConfig, PersonInferenceConfig } from '@tensorflow-models/body-pix/dist/body_pix_model';
 import useFormFieldsUpdater from '../../objectUpdater';
+import { Button } from '@mui/material';
 
 
 type MlSettings = PersonInferenceConfig & ModelConfig
 
 const RemoveBackground = () => {
-  const ctx = useContext(ImageEditorContext)
-  const canvasRef = useRef<HTMLCanvasElement>()
-  const [isProcessed, setIsProcessed] = useState(false)
+  const ctx = useContext<ImageEditorContextType>(ImageEditorContext)
+  const canvasRef = ctx.canvas
+  // const [isProcessed, setIsProcessed] = useState(false)
   const [restoreBaseImg, setRestoreBaseImg] = useState(false)
 
   const [handleUpdate, get] = useFormFieldsUpdater({
@@ -27,97 +28,103 @@ const RemoveBackground = () => {
   } as MlSettings)
 
   useEffect(() => {
-    if (isProcessed == true) {
-      setRestoreBaseImg(it => !it)
+
+    if (restoreBaseImg == true) {
+      // setRestoreBaseImg(it => !it)
+      resetCanvas()
     }
-    setIsProcessed(false)
   }, [get()])
 
-
-  // 'ResNet50' | 'MobileNetV1'
-  // number | 'low' | 'medium' | 'high' | 'full'
   useEffect(() => {
-    tf.setBackend('cpu')
-    if (canvasRef.current != undefined) {
-      // const cvs = canvasRef.current
-      // const ctx2d = cvs.getContext('2d')
 
-      imageCompression.drawFileInCanvas(ctx.originalFile!)
-        .then(
-          ([imgEle, offsetCanvas]) => {
-            const baseCtx = canvasRef.current?.getContext(`2d`)
-            console.log('drawing original')
-            const sizes = { w: imgEle.width, h: imgEle.height }
-            console.log({ sizes })
-            canvasRef.current!.width = sizes.w
-            canvasRef.current!.height = sizes.h
-            ctx.setCanvasSize(sizes)
-            baseCtx?.clearRect(0, 0, sizes.w, sizes.h)
+    // imageCompression.canvasToFile(ctx.canvas.current!, '', '', 1).then(file => {
+    //   ctx.setOriginalFile(file)
+    //   ctx.setActiveFile('original')
+    // })
+    // URL.createObjectURL(await imageCompression.canvasToFile(canvas.current))
 
-            setTimeout(() => {
-
-              baseCtx?.drawImage(imgEle, 0, 0)
-            }, 200);
-
-          }
-        )
-    }
+  }, [])
 
 
+  const resetCanvas = () => {
+    setRestoreBaseImg(false)
+    imageCompression.drawFileInCanvas(ctx.originalFile!)
+      .then(
+        ([imgEle, offsetCanvas]) => {
+          const baseCtx = canvasRef.current?.getContext(`2d`)
+          console.log('drawing original')
+          const sizes = { w: imgEle.width, h: imgEle.height }
+          console.log({ sizes })
+          canvasRef.current!.width = sizes.w
+          canvasRef.current!.height = sizes.h
+          ctx.setCanvasSize(sizes)
 
-  }, [restoreBaseImg])
+          setTimeout(() => {
 
-  const downloadProcessedImg = async () => {
-    if (!canvasRef.current) return
-    // const { width, height } = canvasRef.current
-    // const ctx2d = canvasRef.current.getContext('2d')
-    const processedCtx = canvasRef.current
+            baseCtx?.drawImage(imgEle, 0, 0)
+          }, 200);
 
-
-    // const cleanedImgFile = await imageCompression.getFilefromDataUrl(processedCtx.toDataURL(), '')
-
-    // const [imgEle, offsetCanvas] = await imageCompression.drawFileInCanvas(cleanedImgFile)
-
-
-    // ctx.canvasContext.current?.drawImage(offsetCanvas, 0, 0, width, height)
-
-    // console.log("DONE !")
-    // ctx.setOriginalFile(cleanedImgFile)
-
-    const aEle = document.createElement('a')
-    aEle.href = processedCtx.toDataURL()
-    aEle.download = ctx.fileName ?? "output.png"
-    aEle.click()
-    return
-
-    // ctx2d?.drawImage()
-    // ctx.canvasContext.current?.drawImage(ctx2d)
-    // const processedImg = ctx2d?.getImageData(0, 0, width, height)
-
-    // ctx.canvasContext.current?.drawImage(processedImg, 0, 0)
-    // window.URL.createObjectURL(processedImg)
-
-
-    // TODO: set as ctx.processedFile
-    // then, display btn download under img
-    // 
+        }
+      )
   }
 
 
-  const backgroundRemoval = async () => {
-    setIsProcessed(true)
+  useEffect(() => {
+    tf.setBackend('cpu')
+    // if (canvasRef.current != undefined) {
 
-    if (!canvasRef || !canvasRef.current)
+    //   imageCompression.drawFileInCanvas(ctx.originalFile!)
+    //     .then(
+    //       ([imgEle, offsetCanvas]) => {
+    //         const baseCtx = canvasRef.current?.getContext(`2d`)
+    //         console.log('drawing original')
+    //         const sizes = { w: imgEle.width, h: imgEle.height }
+    //         console.log({ sizes })
+    //         canvasRef.current!.width = sizes.w
+    //         canvasRef.current!.height = sizes.h
+    //         ctx.setCanvasSize(sizes)
+    //         baseCtx?.clearRect(0, 0, sizes.w, sizes.h)
+
+    //         setTimeout(() => {
+
+    //           baseCtx?.drawImage(imgEle, 0, 0)
+    //         }, 200);
+
+    //       }
+    //     )
+    // }
+
+  }, [restoreBaseImg])
+
+  // const downloadProcessedImg = async () => {
+  //   // if (!ctx.canvas.current) return
+
+  //   // const processedCtx = canvasRef.current
+
+
+  //   // const aEle = document.createElement('a')
+  //   // aEle.href = processedCtx.toDataURL()
+  //   // aEle.download = ctx.fileName ?? "output.png"
+  //   // aEle.click()
+  //   // return
+  // }
+
+
+  const backgroundRemoval = async () => {
+    setRestoreBaseImg(false)
+
+
+    if (!canvasRef.current)
       return
+
     const canvas = canvasRef.current
 
     const net = await bodyPix.load(get())
     const segmentation = await net.segmentPerson(canvas, get())
+    const blackboardCtx = ctx.canvasContext.current!
+    const { data: imgData } = blackboardCtx.getImageData(0, 0, canvas.width, canvas.height)
 
-    const ctx = canvas.getContext('2d')!
-    const { data: imgData } = ctx.getImageData(0, 0, canvas.width, canvas.height)
-
-    const newImg = ctx.createImageData(canvas.width, canvas.height)
+    const newImg = blackboardCtx.createImageData(canvas.width, canvas.height)
     const newImgData = newImg.data
 
     segmentation.data.forEach((segment, i) => {
@@ -129,7 +136,8 @@ const RemoveBackground = () => {
       }
     })
 
-    ctx.putImageData(newImg, 0, 0)
+    setRestoreBaseImg(true)
+    blackboardCtx.putImageData(newImg, 0, 0)
   }
 
 
@@ -138,7 +146,7 @@ const RemoveBackground = () => {
 
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ margin: "0 auto" }}>
-          <canvas ref={canvasRef as any} />
+          {/* <canvas ref={canvasRef as any} /> */}
         </div>
         <div style={{
           display: `flex`,
@@ -244,8 +252,10 @@ const RemoveBackground = () => {
           display: `flex`,
           justifyContent: `center`
         }}>
-          <button style={isProcessed ? { display: 'none' } : undefined} onClick={backgroundRemoval}> usuń tło </button>
-          <button style={isProcessed ? undefined : { display: 'none' }} onClick={downloadProcessedImg}> pobierz </button>
+          <Button variant='contained' style={restoreBaseImg ? { display: 'none' } : undefined} onClick={backgroundRemoval}> usuń tło </Button>
+          {/* <button style={restoreBaseImg ? undefined : { display: 'none' }} onClick={downloadProcessedImg}> pobierz </button> */}
+          <Button variant='contained' color='success' style={restoreBaseImg ? undefined : { display: 'none' }} onClick={resetCanvas}> resetuj </Button>
+
         </div >
       </div>
 

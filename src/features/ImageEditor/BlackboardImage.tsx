@@ -7,10 +7,10 @@ import { IconButton } from '@mui/material'
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import { ToolType } from './NavMenu'
 
-const ImageBlackboard = () => {
+const BlackboardImage = () => {
     const style = useStyles()
     const ctx = useContext(ImageEditorContext)
-    const hideWhenView: ToolType[] = ['background-remove']
+    const hideWhenView: ToolType[] = []//['background-remove']
 
     const shouldHide = ctx.toolName ? hideWhenView.includes(ctx.toolName) : true
 
@@ -28,7 +28,7 @@ const ImageBlackboard = () => {
                     console.log(`drawing ${ctx.activeFile}`)
                     const sizes = { w: imgEle.width, h: imgEle.height }
                     ctx.setCanvasSize(sizes)
-                    baseCtx?.clearRect(0, 0, sizes.w, sizes.h)
+                    // baseCtx?.clearRect(0, 0, sizes.w, sizes.h)
 
                     setTimeout(() => {
                         baseCtx?.drawImage(offsetCanvas, 0, 0)
@@ -59,7 +59,7 @@ const ImageBlackboard = () => {
     )
 }
 
-export default ImageBlackboard
+export default BlackboardImage
 
 
 const useStyles = createUseStyles((theme) => {
