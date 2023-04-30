@@ -8,32 +8,30 @@ import { ToolType } from './NavMenu';
 const DownloadBtn = () => {
 
     const ctx = useContext(ImageEditorContext)
-
-    const hideWhenView: ToolType[] = [] //['background-remove']
+    const tool = ctx.toolName
+    const hideWhenView: ToolType[] = ['background-remove'] //['background-remove']
 
     const shouldHide = ctx.toolName ? hideWhenView.includes(ctx.toolName) : true
-
+    const downloadCanvasImgInViews = ['draw', 'img-resize', 'compression'] as ToolType[]
 
     const downloadClicked = () => {
-        if (ctx.canvasContext.current) {
-            console.log(ctx.activeFile)
-            // return
-            window.URL.createObjectURL((ctx.activeFile == 'original' ? ctx.originalFile : ctx.processedFile)!)
-            // const file = ctx.canvas.current?.toDataURL()! 
-            //window.URL.createObjectURL((ctx.activeFile == 'original' ? ctx.originalFile : ctx.processedFile)!)
-            //ctx.canvas.current?.toDataURL()! //window.URL.createObjectURL(ctx.processedFile ?? ctx.originalFile!) // ctx.canvas.current!.toDataURL(`png`)
-            const aEle = document.createElement('a')
-            aEle.href = window.URL.createObjectURL((ctx.activeFile == 'original' ? ctx.originalFile : ctx.processedFile)!)
-            aEle.download = ctx.fileName ?? "output.png"
-            aEle.click()
-            return
+        const sholudDownloadCanvas = downloadCanvasImgInViews.some(it => it == tool)
+        const aEle = document.createElement('a')
+        console.log({ sholudDownloadCanvas })
+        let hrefUrl
+        if (sholudDownloadCanvas) {
+            if (tool == 'compression')
+                hrefUrl = window.URL.createObjectURL((ctx.activeFile == 'original' ? ctx.originalFile : ctx.processedFile)!)
+            else
+                hrefUrl = ctx.canvas.current?.toDataURL()!
         }
-        else {
-            console.log({ canvasCtx: ctx.canvasContext.current })
-        }
+        else
+            hrefUrl = window.URL.createObjectURL((ctx.activeFile == 'original' ? ctx.originalFile : ctx.processedFile)!)
 
-
-
+        aEle.href = hrefUrl
+        aEle.download = ctx.fileName ?? "output.png"
+        aEle.click()
+        return
     }
 
     return (

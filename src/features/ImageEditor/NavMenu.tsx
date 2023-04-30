@@ -61,7 +61,7 @@ const NavMenu = () => {
                     </>
                 }
                 {ctx.processedFile && <>
-                    <Button onClick={() => { ctx.setTool(<DiffComponent />);; ctx.setToolName('diff') }}>diff</Button>
+                    {/* <Button onClick={() => { ctx.setTool(<DiffComponent />);; ctx.setToolName('diff') }}>diff</Button> */}
                     <Button onClick={clearData} >Wyczyść dane</Button>
                 </>
                 }
