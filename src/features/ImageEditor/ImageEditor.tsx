@@ -8,6 +8,7 @@ import { BACKGROUND } from '../theme/colors';
 import ContentContainer from '../ContentContainer/ContentContainer';
 import DownloadBtn from './DownloadBtn';
 import Head from 'next/head';
+import { AppConfig } from '@/src/config';
 
 export type CanvasSize = { w: number, h: number }
 export type ActiveFile = "original" | 'processed' | undefined
@@ -45,10 +46,27 @@ const ImageEditor = () => {
     const [tool, setTool] = useState<JSX.Element | null>(null)
     const style = useStyles()
 
+    const loadPersonImg = async () => {
+        if (!AppConfig.isDevMode) return
+        let response = await fetch('/person.jpg')
+        let data = await response.blob();
+        let metadata = {
+            type: 'image/jpg'
+        };
+        let file = new File([data], "/person.jpg", metadata);
+        // canvasContextRef.current?.drawImage(file,)
+        imageCompression.drawFileInCanvas(file).then(([img, canv]) => {
+            canvasContextRef.current?.drawImage(img, 0, 0)
+            setActiveFile('original')
+            setToolName('view')
+            setOriginalFile(file)
+        })
+    }
 
     useEffect(() => {
         if (canvasRef.current != null) {
             canvasContextRef.current = canvasRef.current.getContext('2d')
+            loadPersonImg().then()
         }
     }, [canvasRef.current])
 

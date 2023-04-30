@@ -21,7 +21,7 @@ const DrawOnBoard = () => {
     })
     // URL.createObjectURL(await imageCompression.canvasToFile(canvas.current))
 
-    const onMuseMove = (it: MouseEvent) => { showCords(it) }
+    const onMuseMove = (it: MouseEvent) => { drawLine(it) }
     const onMouseUp = () => { isDrawing.current = (false); lastPointPos.current = undefined }
     const onMouseDown = () => { isDrawing.current = (true) }
     canvas.current?.addEventListener('mousemove', onMuseMove)
@@ -38,7 +38,7 @@ const DrawOnBoard = () => {
 
 
 
-  function showCords({ offsetX, offsetY }: MouseEvent) {
+  function drawLine({ offsetX, offsetY }: MouseEvent) {
     if (!isDrawing.current || !canvasContext.current)
       return
 
