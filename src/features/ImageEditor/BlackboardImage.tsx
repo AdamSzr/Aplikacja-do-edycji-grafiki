@@ -9,7 +9,7 @@ import { ToolType } from './NavMenu'
 const BlackboardImage = () => {
     const style = useStyles()
     const ctx = useContext(ImageEditorContext)
-    const hideWhenView: ToolType[] = []//['background-remove']
+    const hideWhenView: ToolType[] = ['background-remove']//['background-remove']
 
     const shouldHide = ctx.toolName ? hideWhenView.includes(ctx.toolName) : true
 
@@ -41,7 +41,7 @@ const BlackboardImage = () => {
     }, [ctx.activeFile])
 
 
-
+    console.log({ shouldHide })
     return (
         <div className={style.imageBoard} style={shouldHide ? { display: "none" } : undefined}>
             <div >
