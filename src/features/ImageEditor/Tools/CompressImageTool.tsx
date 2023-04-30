@@ -20,6 +20,7 @@ const CompressImageTool = () => {
         maxIteration: 1000,
         onProgress: (e) => {
             setCompressionProgress(e)
+            console.log({ progress: e })
             if (e == 100)
                 setInProgress(false)
         }
@@ -29,7 +30,7 @@ const CompressImageTool = () => {
 
     const compressionStrength = (procentage: number) => {
 
-        console.log({ procentage, originalSiz: ctx.originalFile?.size, expectedSiz: (ctx.originalFile?.size ?? 0) * (0.01 * procentage) / oneMb })
+        console.log({ procentage, originalSiz: ctx.originalFile?.size, expectedSiz: (ctx.originalFile?.size ?? 0) * (0.01 * procentage) })
         setCompressOpt(acc => {
             const nv = ({ ...acc, maxSizeMB: (ctx.originalFile?.size ?? 0) * (0.01 * procentage) / oneMb })
             return nv
@@ -50,8 +51,10 @@ const CompressImageTool = () => {
         setInProgress(true)
         const compressed = await compressFile(ctx.originalFile)
         ctx.setProcessedFile(compressed)
-    }
+        console.log({ compressed })
 
+    }
+    console.log(ctx.originalFile?.size, ctx.processedFile?.size)
 
     return (
         <div>
@@ -89,7 +92,11 @@ const CompressImageTool = () => {
                     </tr>
                     <tr>
                         <td>oczekiwany</td>
-                        <td>{parseSizeToHumanReadable((compressOpt.maxSizeMB ?? 0) * 1_000_000)}</td>
+                        <td>{parseSizeToHumanReadable(((compressOpt.maxSizeMB == Infinity ? 0 : compressOpt.maxSizeMB) ?? 0) * 1_000_000)}</td>
+                    </tr>
+                    <tr>
+                        <td>wynikowy</td>
+                        <td>{parseSizeToHumanReadable((ctx.processedFile?.size ?? 0))}</td>
                     </tr>
                 </table>
                 <Button disabled={inProgress} onClick={onCompressClick}>
