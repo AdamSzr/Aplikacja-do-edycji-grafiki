@@ -1,5 +1,5 @@
 
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react'
+import React, { ChangeEvent, ChangeEventHandler, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import BlackboardImage from '../BlackboardImage'
 import { ImageEditorContext } from '../ImageEditor'
 import imageCompression from 'browser-image-compression'
@@ -12,7 +12,7 @@ import RectangleIcon from '@mui/icons-material/Rectangle';
 
 type Point = { x: number, y: number }
 export type DrawTool = "pen" | "circle" | "rectangle"
-
+export type DrawOptions = { color: string, lineWidth: number }
 
 const DrawOnBoard = () => {
   const ctx = useContext(ImageEditorContext)
@@ -20,6 +20,7 @@ const DrawOnBoard = () => {
   const lastPointPos = useRef<Point>()
   const isDrawing = useRef<boolean>(false)
   const [drawTool, setDrawTool] = useState<DrawTool | null>(null)
+  const [drawOptions, setDrawOptions] = useState<DrawOptions>({ color: '#295432', lineWidth: 1 })
 
   const originalFile = useMemo(() => {
     if (ctx.originalFile) {
@@ -70,6 +71,10 @@ const DrawOnBoard = () => {
 
       console.log('up', { offsetX, offsetY })
       ctx.beginPath();
+
+      ctx.lineWidth = drawOptions.lineWidth
+      ctx.strokeStyle = drawOptions.color
+      console.log({ drawOptions })
       ctx.rect(x, y, offsetX - x, offsetY - y);
       ctx.stroke();
       lastPointPos.current = undefined
@@ -108,6 +113,8 @@ const DrawOnBoard = () => {
 
       console.log([centerX, centerY, radius, 0, 2 * Math.PI])
       ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI)
+      ctx.lineWidth = drawOptions.lineWidth
+      ctx.strokeStyle = drawOptions.color
       ctx.stroke();
       lastPointPos.current = undefined
     }
@@ -185,13 +192,22 @@ const DrawOnBoard = () => {
       <IconButton onClick={setToolPen} > <CreateIcon fontSize="inherit" /> </IconButton>
       <IconButton onClick={rectangle} > <RectangleIcon fontSize="inherit" /> </IconButton>
       <IconButton onClick={circle}> <Brightness1Icon fontSize="inherit" /> </IconButton>
-      <input type="color" id="head" name="head" value="#000" />
+      <input onChange={onColorChange} type="color" defaultValue={drawOptions.color} />
+      <input type='number' onChange={onLineWidthChange} defaultValue={drawOptions.lineWidth} min={1} />
     </>)
   }, [])
 
 
+  const onLineWidthChange = (e: any) => {
+    const lineWidth = Number(e.target.value)
+    console.log(lineWidth)
+    setDrawOptions(it => ({ ...it, lineWidth }))
+  }
 
-  // const onColorChange
+  const onColorChange = (e: any) => {
+    const color = e.target.value as string
+    setDrawOptions(it => ({ ...it, color }))
+  }
 
   function drawLine({ offsetX, offsetY }: MouseEvent) {
     if (!isDrawing.current || !canvasContext.current)
@@ -206,6 +222,10 @@ const DrawOnBoard = () => {
 
     const prevPoint = lastPointPos.current
     canvasContext.current.beginPath()
+
+    canvasContext.current.lineWidth = drawOptions.lineWidth
+    canvasContext.current.strokeStyle = drawOptions.color
+    console.log({ drawOptions })
     canvasContext.current.moveTo(prevPoint.x, prevPoint.y);
     canvasContext.current.lineTo(point.x, point.y);
     canvasContext.current.stroke();
