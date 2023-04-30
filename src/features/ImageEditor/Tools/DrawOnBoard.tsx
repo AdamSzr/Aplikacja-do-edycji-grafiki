@@ -7,6 +7,8 @@ import { IconButton } from '@mui/material'
 import CreateIcon from '@mui/icons-material/Create';
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import Brightness1Icon from '@mui/icons-material/Brightness1';
+import RectangleIcon from '@mui/icons-material/Rectangle';
+
 
 type Point = { x: number, y: number }
 export type DrawTool = "pen" | "circle" | "rectangle"
@@ -58,7 +60,33 @@ const DrawOnBoard = () => {
     // ctx.canvasContext.current?.clearRect(0, 0, ctx.canvasSize!.w, ctx.canvasSize!.h)
   }
 
+  const drawRectangleEffect = () => {
+    const onMouseUp = ({ offsetX, offsetY }: MouseEvent) => {
+      if (!lastPointPos.current) return
 
+      isDrawing.current = (false);
+      const ctx = canvasContext.current!
+      const { x, y } = lastPointPos.current
+
+      console.log('up', { offsetX, offsetY })
+      ctx.beginPath();
+      ctx.rect(x, y, offsetX - x, offsetY - y);
+      ctx.stroke();
+      lastPointPos.current = undefined
+    }
+    const onMouseDown = ({ offsetX, offsetY }: MouseEvent) => {
+      lastPointPos.current = { x: offsetX, y: offsetY }
+      console.log('down', { offsetX, offsetY })
+      isDrawing.current = (true);
+    }
+    canvas.current?.addEventListener('mouseup', onMouseUp)
+    canvas.current?.addEventListener('mousedown', onMouseDown)
+
+    return () => {
+      canvas.current?.removeEventListener('mouseup', onMouseUp)
+      canvas.current?.removeEventListener('mousedown', onMouseDown)
+    }
+  }
 
   const drawCircleEffect = () => {
     const onMouseUp = ({ offsetX, offsetY }: MouseEvent) => {
@@ -69,12 +97,18 @@ const DrawOnBoard = () => {
       const { x, y } = lastPointPos.current
 
       console.log('up', { offsetX, offsetY })
+      const calcCenter = () => {
+        const xAxes = (offsetX + x) / 2
+        const yAxes = (offsetY + y) / 2
+        const radius = Math.abs(offsetX - xAxes)
+        return [xAxes, yAxes, radius]
+      }
+      const [centerX, centerY, radius] = calcCenter()
       ctx.beginPath();
-      ctx.lineWidth = Number("6");
-      ctx.strokeStyle = "red";
-      ctx.rect(x, y, offsetX - x, offsetY - y);
-      ctx.stroke();
 
+      console.log([centerX, centerY, radius, 0, 2 * Math.PI])
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI)
+      ctx.stroke();
       lastPointPos.current = undefined
     }
     const onMouseDown = ({ offsetX, offsetY }: MouseEvent) => {
@@ -117,8 +151,12 @@ const DrawOnBoard = () => {
     if (drawTool == 'pen') {
       return drawLineEffect()
     }
+    if (drawTool == 'rectangle') {
+      console.log('drawingRectangle')
+      return drawRectangleEffect()
+    }
     if (drawTool == 'circle') {
-      console.log('drawingCircle')
+      console.log('circle')
       return drawCircleEffect()
     }
 
@@ -130,7 +168,13 @@ const DrawOnBoard = () => {
     console.log(`setting - pen`)
   }
 
-  const setToolCircle = () => {
+  const rectangle = () => {
+    setDrawTool('rectangle')
+    console.log(`setting - rectangle`)
+  }
+
+
+  const circle = () => {
     setDrawTool('circle')
     console.log(`setting - circle`)
   }
@@ -139,12 +183,15 @@ const DrawOnBoard = () => {
     ctx.setToolboxItems(<>
       <IconButton onClick={cleanCanvas}> <CleaningServicesIcon fontSize="inherit" /></IconButton>
       <IconButton onClick={setToolPen} > <CreateIcon fontSize="inherit" /> </IconButton>
-      <IconButton onClick={setToolCircle} > <Brightness1Icon /> </IconButton>
-
+      <IconButton onClick={rectangle} > <RectangleIcon fontSize="inherit" /> </IconButton>
+      <IconButton onClick={circle}> <Brightness1Icon fontSize="inherit" /> </IconButton>
+      <input type="color" id="head" name="head" value="#000" />
     </>)
   }, [])
 
 
+
+  // const onColorChange
 
   function drawLine({ offsetX, offsetY }: MouseEvent) {
     if (!isDrawing.current || !canvasContext.current)
