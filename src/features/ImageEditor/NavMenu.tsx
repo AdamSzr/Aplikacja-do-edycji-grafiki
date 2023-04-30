@@ -32,21 +32,7 @@ const NavMenu = () => {
         ctx.setPageName(`Edytujesz ${imageFile.name}`)
     }
 
-    const downloadFile = () => {
-        if (!ctx.processedFile) return
-        const a = document.createElement("a")
-        a.href = URL.createObjectURL(ctx.processedFile)
-        a.download = `${ctx.fileName}.jpg`
-        a.click()
-    }
 
-    const showDiffrence = async () => {
-        ctx.setActiveFile(ctx.activeFile == 'original' ? 'processed' : 'original')
-    }
-
-    const onDownloadClick = () => {
-        // downloadFile()
-    }
 
     const clearData = () => {
         ctx.setActiveFile(null)
@@ -66,7 +52,6 @@ const NavMenu = () => {
                 {!ctx.originalFile && <input type='file' onChange={onFileInputChange} />}
 
                 <Button onClick={() => { ctx.setTool(<DrawOnBoard />); ctx.setToolName('draw') }} > rysuj </Button>
-                {/* <Button onClick={() => ctx.setTool(<CanvasResize />)} > Resize </Button> */}
                 {
                     ctx.originalFile && <>
                         <Button onClick={() => { ctx.setTool(<CompressImageTool />); ctx.setToolName('compression') }}> kompresja </Button>
@@ -81,11 +66,6 @@ const NavMenu = () => {
                 </>
                 }
             </nav>
-            {/* {ctx.originalFile && <Box>
-                <Typography className={style.fileName}>
-                    {`Edytujesz własnie`} <b>{ctx.fileName}</b>
-                </Typography>
-            </Box>} */}
         </>
     )
 }

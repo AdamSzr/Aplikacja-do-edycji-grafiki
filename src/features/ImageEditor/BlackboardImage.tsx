@@ -1,9 +1,8 @@
 
 import imageCompression from 'browser-image-compression'
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import { ImageEditorContext } from './ImageEditor'
-import { IconButton } from '@mui/material'
 import { ToolType } from './NavMenu'
 
 const BlackboardImage = () => {
@@ -41,7 +40,6 @@ const BlackboardImage = () => {
     }, [ctx.activeFile])
 
 
-    console.log({ shouldHide })
     return (
         <div className={style.imageBoard} style={shouldHide ? { display: "none" } : undefined}>
             <div >

@@ -51,7 +51,6 @@ const ImageEditor = () => {
     const style = useStyles()
 
     const loadPersonImg = async () => {
-        if (!AppConfig.isDevMode) return
         let response = await fetch('/person.jpg')
         let data = await response.blob();
         let metadata = {
@@ -67,10 +66,11 @@ const ImageEditor = () => {
     }
 
     useEffect(() => {
-        if (canvasRef.current != null) {
+        if (canvasRef.current != null)
             canvasContextRef.current = canvasRef.current.getContext('2d')
+
+        if (AppConfig.isDevMode && !originalFile)
             loadPersonImg().then()
-        }
     }, [canvasRef.current])
 
 
@@ -96,7 +96,7 @@ const ImageEditor = () => {
 
     }
 
-    console.log({ activeFile, canvasSize, ref: canvasRef.current, fileName, originalFile, processedFile, toolName })
+    console.log({ activeFile, toolName })
 
     return (
         <ImageEditorContext.Provider value={contextValue} >

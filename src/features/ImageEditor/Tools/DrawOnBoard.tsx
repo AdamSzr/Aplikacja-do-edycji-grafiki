@@ -167,7 +167,7 @@ const DrawOnBoard = () => {
       return drawCircleEffect()
     }
 
-  }, [drawTool])
+  }, [drawTool, drawOptions])
 
 
   const setToolPen = () => {
