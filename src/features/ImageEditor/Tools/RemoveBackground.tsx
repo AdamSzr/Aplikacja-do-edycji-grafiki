@@ -1,45 +1,34 @@
 
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import { ImageEditorContext, ImageEditorContextType } from '../ImageEditor'
-import * as bodyPix from '@tensorflow-models/body-pix'
-import imageCompression from 'browser-image-compression'
+import * as bodyPix from '@tensorflow-models/body-pix';
+import imageCompression from 'browser-image-compression';
+import { useContext, useEffect, useState } from 'react';
+import { ImageEditorContext, ImageEditorContextType } from '../ImageEditor';
 
-import * as tf from '@tensorflow/tfjs';
-import BlackboardImage from '../BlackboardImage';
-import { ModelConfig, PersonInferenceConfig } from '@tensorflow-models/body-pix/dist/body_pix_model';
-import useFormFieldsUpdater from '../../objectUpdater';
+import defaultMlConfig from '@/src/utils/defaultMlConfig';
 import { Button } from '@mui/material';
+import * as tf from '@tensorflow/tfjs';
+import useFormFieldsUpdater from '../../objectUpdater';
 
 
-type MlSettings = PersonInferenceConfig & ModelConfig
 
 const RemoveBackground = () => {
   const ctx = useContext<ImageEditorContextType>(ImageEditorContext)
   const canvasRef = ctx.canvas
-  // const [isProcessed, setIsProcessed] = useState(false)
-  const [restoreBaseImg, setRestoreBaseImg] = useState(false)
+  const [isBackgroundProcessed, setIsBackgroundProcessed] = useState(false)
 
-  const [handleUpdate, get] = useFormFieldsUpdater({
-    architecture: 'MobileNetV1',
-    outputStride: 16,
-    quantBytes: 1,
-    internalResolution: 'medium',
-    segmentationThreshold: 0.4
-  } as MlSettings)
+  const [handleUpdate, get] = useFormFieldsUpdater(defaultMlConfig())
 
 
   useEffect(() => {
 
-    // if (restoreBaseImg == true) {
-    //   resetCanvas()
-    // }
+    if (isBackgroundProcessed == true) {
+      resetCanvas()
+    }
   }, [get()])
 
   useEffect(() => {
     tf.setBackend('cpu')
     if (canvasRef.current != undefined) {
-      const cvs = canvasRef.current
-      const ctx2d = cvs.getContext('2d')
 
       imageCompression.drawFileInCanvas(ctx.originalFile!)
         .then(
@@ -65,7 +54,7 @@ const RemoveBackground = () => {
 
 
   const resetCanvas = () => {
-    // setRestoreBaseImg(false)
+    setIsBackgroundProcessed(false)
     imageCompression.drawFileInCanvas(ctx.originalFile!)
       .then(
         ([imgEle, offsetCanvas]) => {
@@ -87,29 +76,14 @@ const RemoveBackground = () => {
   }
 
 
-  useEffect(() => {
-    tf.setBackend('cpu')
-
-
-  }, [restoreBaseImg])
-
-
 
   const backgroundRemoval = async () => {
     if (!canvasRef || !canvasRef.current)
       return
     const canvas = canvasRef.current
 
-    const net = await bodyPix.load({
-      architecture: 'MobileNetV1', //ResNet50
-      outputStride: 16,
-      quantBytes: 1
-    })
-    const segmentation = await net.segmentPerson(canvas, {
-      internalResolution: 'medium',
-      segmentationThreshold: 0.7,
-      //   scoreTreshold: 0.7
-    })
+    const net = await bodyPix.load(get())
+    const segmentation = await net.segmentPerson(canvas, get())
 
     const ctx = canvas.getContext('2d')!
     const { data: imgData } = ctx.getImageData(0, 0, canvas.width, canvas.height)
@@ -127,6 +101,7 @@ const RemoveBackground = () => {
     })
 
     ctx.putImageData(newImg, 0, 0)
+    setIsBackgroundProcessed(true)
   }
 
 
@@ -241,9 +216,9 @@ const RemoveBackground = () => {
           display: `flex`,
           justifyContent: `center`
         }}>
-          <Button variant='contained' style={restoreBaseImg ? { display: 'none' } : undefined} onClick={backgroundRemoval}> usuń tło </Button>
+          <Button variant='contained' style={isBackgroundProcessed ? { display: 'none' } : undefined} onClick={backgroundRemoval}> usuń tło </Button>
           {/* <button style={restoreBaseImg ? undefined : { display: 'none' }} onClick={downloadProcessedImg}> pobierz </button> */}
-          <Button variant='contained' color='success' style={restoreBaseImg ? undefined : { display: 'none' }} onClick={resetCanvas}> resetuj </Button>
+          <Button variant='contained' color='success' style={isBackgroundProcessed ? undefined : { display: 'none' }} onClick={resetCanvas}> resetuj </Button>
 
         </div >
       </div>
