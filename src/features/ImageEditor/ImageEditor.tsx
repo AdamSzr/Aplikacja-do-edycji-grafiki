@@ -5,7 +5,7 @@ import NavMenu, { ToolType } from './NavMenu';
 import BlackboardImage from './BlackboardImage';
 import { createUseStyles } from 'react-jss';
 import { BACKGROUND } from '../theme/colors';
-import ContentContainer from '../ContentContainer/ContentContainer';
+import ContentContainer from '../../components/ContentContainer/ContentContainer';
 import DownloadBtn from './DownloadBtn';
 import Head from 'next/head';
 import { AppConfig } from '@/src/config';

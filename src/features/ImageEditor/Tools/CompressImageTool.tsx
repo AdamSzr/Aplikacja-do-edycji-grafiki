@@ -3,7 +3,7 @@ import imageCompression, { Options } from 'browser-image-compression';
 import React, { useContext, useEffect, useState } from 'react'
 import { ImageEditorContext } from '../ImageEditor';
 import FileSizeDisplay from './FileSizeDisplay';
-import LinearProgressWithLabel from './LinearProgressWithLabel';
+import LinearProgressWithLabel from '../../../components/LinearProgressWithLabel';
 import parseSizeToHumanReadable from '@/src/utils/parseSizeToHumanReadable';
 
 const CompressImageTool = () => {
