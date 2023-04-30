@@ -1,6 +1,6 @@
 import { Button, LinearProgress, Slider, Typography } from '@mui/material';
 import imageCompression, { Options } from 'browser-image-compression';
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ImageEditorContext } from '../ImageEditor';
 import FileSizeDisplay from './FileSizeDisplay';
 import LinearProgressWithLabel from './LinearProgressWithLabel';
@@ -28,8 +28,8 @@ const CompressImageTool = () => {
     })
 
 
-    const compressionStrength = (procentage: number) => {
 
+    const compressionStrength = (procentage: number) => {
         console.log({ procentage, originalSiz: ctx.originalFile?.size, expectedSiz: (ctx.originalFile?.size ?? 0) * (0.01 * procentage) })
         setCompressOpt(acc => {
             const nv = ({ ...acc, maxSizeMB: (ctx.originalFile?.size ?? 0) * (0.01 * procentage) / oneMb })
@@ -64,7 +64,7 @@ const CompressImageTool = () => {
                 <Slider
                     size="small"
                     max={100}
-                    min={30}
+                    min={1}
                     disabled={inProgress}
                     defaultValue={70}
                     aria-label="Small"
@@ -76,11 +76,7 @@ const CompressImageTool = () => {
             </div>
             {inProgress == true && <LinearProgressWithLabel value={compressionProgress} />}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                {/* display: flex;
-    flex-direction: column;
-    align-items: center; */}
                 <table style={{
-                    // margin: `0 auto`
                 }} >
                     <th>
                         <td>plik</td>

@@ -4,6 +4,7 @@ import { useContext, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
 import { ImageEditorContext } from './ImageEditor'
 import { ToolType } from './NavMenu'
+import { Padding } from '@mui/icons-material'
 
 const BlackboardImage = () => {
     const style = useStyles()
@@ -62,7 +63,8 @@ const useStyles = createUseStyles((theme) => {
             display: `flex`,
             justifyContent: 'center',
             maxWidth: "1080px",
-            margin: '0 auto'
+            margin: '0 auto',
+            padding: '5px'
         },
         toolbox: {
             display: 'flex',
