@@ -42,7 +42,8 @@ const BlackboardImage = () => {
 
 
     const cleanCanvas = () => {
-        ctx.canvasContext.current?.clearRect(0, 0, ctx.canvasSize!.w, ctx.canvasSize!.h)
+        console.log(ctx)
+        // ctx.canvasContext.current?.clearRect(0, 0, ctx.canvasSize!.w, ctx.canvasSize!.h)
     }
 
 

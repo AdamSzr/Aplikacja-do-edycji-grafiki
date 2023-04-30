@@ -113,31 +113,74 @@ const RemoveBackground = () => {
   const backgroundRemoval = async () => {
     setRestoreBaseImg(false)
 
+    // if (!ctx.canvasContext.current)
+    //   return
 
-    if (!canvasRef.current)
-      return
+    // const secCanv = document.createElement('canvas')
+    // secCanv.height = ctx.canvasSize?.w!
+    // secCanv.width = ctx.canvasSize?.h!
+    // var secCtx = secCanv.getContext('2d');
+    // secCtx?.drawImage(ctx.canvas.current!, ctx.canvasSize?.w!, ctx.canvasSize?.h!)
 
-    const canvas = canvasRef.current
 
+    // // const imgCpyData = ctx.canvasContext.current?.canvas.toDataURL()
+    // const toProcessImg = secCtx?.getImageData(0, 0, ctx.canvasSize?.w!, ctx.canvasSize?.h!)!
+    // ctx.canvasContext.current!.getImageData(0, 0, ctx.canvasSize?.w!, ctx.canvasSize?.h!)
+    // console.log(imgCpyData)
+    // var image = new Image();
+    // image.src = imgCpyData!
+    // image.width = ctx.canvasSize?.w!
+    // image.height = ctx.canvasSize?.h!
+    // console.log({ image })
+
+    // const imageCopy = imageCompression.drawImageInCanvas(image)
+    // const cpyCanvas = imageCopy!
+    // const copyImgCtx = cpyCanvas.getContext('2d')!
+    // const imgData = copyImgCtx.getImageData(0, 0, cpyCanvas.width, cpyCanvas.height).data
+
+    // let newImg = copyImgCtx.createImageData(cpyCanvas.width, cpyCanvas.height)
+    // newImg = ctx.canvasContext.current.getImageData(0, 0, ctx.canvasSize?.w!, ctx.canvasSize?.h!)
+    const blackBoardCanvas = ctx.canvas.current!
+    const blackBoardCtx = ctx.canvasContext.current!
     const net = await bodyPix.load(get())
-    const segmentation = await net.segmentPerson(canvas, get())
-    const blackboardCtx = ctx.canvasContext.current!
-    const { data: imgData } = blackboardCtx.getImageData(0, 0, canvas.width, canvas.height)
+    const segmentation = await net.segmentPerson(blackBoardCanvas, get())
+    const segmentedImgData = blackBoardCtx.getImageData(0, 0, ctx.canvasSize?.w!, ctx.canvasSize?.h!)
+    const segmentedBytes = segmentedImgData.data
+    const newImgData = blackBoardCtx.createImageData(blackBoardCanvas.width, blackBoardCanvas.height).data
 
-    const newImg = blackboardCtx.createImageData(canvas.width, canvas.height)
-    const newImgData = newImg.data
+    // let newImgData = ctx.canvasContext.current.getImageData(0, 0, ctx.canvasSize?.w!, ctx.canvasSize?.h!).data
+
 
     segmentation.data.forEach((segment, i) => {
       if (segment == 1) {
-        newImgData[i * 4] = imgData[i * 4]
-        newImgData[i * 4 + 1] = imgData[i * 4 + 1]
-        newImgData[i * 4 + 2] = imgData[i * 4 + 2]
-        newImgData[i * 4 + 3] = imgData[i * 4 + 3]
+        newImgData[i * 4] = segmentedBytes[i * 4]
+        newImgData[i * 4 + 1] = segmentedBytes[i * 4 + 1]
+        newImgData[i * 4 + 2] = segmentedBytes[i * 4 + 2]
+        newImgData[i * 4 + 3] = segmentedBytes[i * 4 + 3]
       }
     })
+    const compareBytes = () => {
+      const oldData = segmentedImgData
+      if (newImgData.length == segmentedBytes.length)
+        console.log(`same same`)
 
-    setRestoreBaseImg(true)
-    blackboardCtx.putImageData(newImg, 0, 0)
+      for (let x = 0; x < newImgData.length / 1000; x++) {
+        if (newImgData[x] != segmentedBytes[x])
+          console.log(`DIFF ${x}`, newImgData[x], segmentedBytes[x])
+
+      }
+
+    }
+
+    compareBytes()
+    // newImgData
+    canvasRef.current?.getContext('2d')?.drawImage(blackBoardCanvas, ctx.canvasSize?.w!, ctx.canvasSize?.h!)
+    // console.log({ newImgData })
+    // ctx.canvasContext.current.clearRect(0, 0, ctx.canvasSize?.w!, ctx.canvasSize?.h!)
+    // ctx.canvasContext.current.drawImage(secCanv, ctx.canvasSize?.w!, ctx.canvasSize?.h!)
+    blackBoardCtx.putImageData(segmentedImgData, 0, 0)
+    // ctx.canvasContext.current!.putImageData(new ImageData(newImgData, ctx.canvasSize?.w!, ctx.canvasSize?.h!), 0, 0)
+    // console.log({ ctx })
   }
 
 
@@ -146,99 +189,104 @@ const RemoveBackground = () => {
 
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ margin: "0 auto" }}>
-          {/* <canvas ref={canvasRef as any} /> */}
+          <canvas ref={canvasRef as any} />
         </div>
         <div style={{
           display: `flex`,
           justifyContent: `center`
         }}>
           <table style={{ borderSpacing: `10px` }}>
-            <tr style={{ fontWeight: '700' }}> <td>opcja</td><td>ustawienia</td></tr>
-            <tr>
-              <td>architecture
-              </td>
-              <td>
-                <select
-                  defaultValue={get().architecture}
-                  onChange={(e) => {
-                    const v = e.target.value
-                    handleUpdate('architecture', v as any)
-                  }}>
-                  <option>ResNet50</option>
-                  <option>MobileNetV1</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                outputStride
-              </td>
-              <td>
-                <select
-                  defaultValue={get().outputStride}
-                  title='okej'
-                  onChange={(e) => {
-                    const v = Number(e.target.value)
-                    handleUpdate('outputStride', v as any)
-                  }}>
-                  <option style={get().architecture == 'ResNet50' ? { display: `none` } : undefined} >8</option>
-                  <option>16</option>
-                  <option style={get().architecture == 'MobileNetV1' ? { display: `none` } : undefined}>32</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                quantBytes
-              </td>
-              <td>
-                <select
-                  defaultValue={get().quantBytes} onChange={(e) => {
-                    const v = Number(e.target.value)
-                    handleUpdate('quantBytes', v as any)
-                  }}>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>4</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                internalResolution
-              </td>
-              <td>
+            <thead>
+              <tr style={{ fontWeight: '700' }}> <td>opcja</td><td>ustawienia</td></tr>
+            </thead>
+            <tbody>
+
+              <tr>
+                <td>architecture
+                </td>
+                <td>
+                  <select
+                    defaultValue={get().architecture}
+                    onChange={(e) => {
+                      const v = e.target.value
+                      handleUpdate('architecture', v as any)
+                    }}>
+                    <option>ResNet50</option>
+                    <option>MobileNetV1</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  outputStride
+                </td>
+                <td>
+                  <select
+                    defaultValue={get().outputStride}
+                    title='okej'
+                    onChange={(e) => {
+                      const v = Number(e.target.value)
+                      handleUpdate('outputStride', v as any)
+                    }}>
+                    <option style={get().architecture == 'ResNet50' ? { display: `none` } : undefined} >8</option>
+                    <option>16</option>
+                    <option style={get().architecture == 'MobileNetV1' ? { display: `none` } : undefined}>32</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  quantBytes
+                </td>
+                <td>
+                  <select
+                    defaultValue={get().quantBytes} onChange={(e) => {
+                      const v = Number(e.target.value)
+                      handleUpdate('quantBytes', v as any)
+                    }}>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>4</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  internalResolution
+                </td>
+                <td>
 
 
-                <select
-                  defaultValue={get().internalResolution} onChange={(e) => {
-                    const v = e.target.value
-                    handleUpdate('internalResolution', v as any)
-                  }}>
-                  <option>low</option>
-                  <option>medium</option>
+                  <select
+                    defaultValue={get().internalResolution} onChange={(e) => {
+                      const v = e.target.value
+                      handleUpdate('internalResolution', v as any)
+                    }}>
+                    <option>low</option>
+                    <option>medium</option>
 
-                  <option>high</option>
-                  <option>full</option>
-                </select>
+                    <option>high</option>
+                    <option>full</option>
+                  </select>
 
-              </td>
-            </tr>
-            <tr>
-              <td>
-                segmentationThreshold
-              </td>
-              <td>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  segmentationThreshold
+                </td>
+                <td>
 
-                <input
-                  defaultValue={get().segmentationThreshold} type={"number"} min={0} max={1} step={0.05} placeholder='segmentationThreshold'
-                  onChange={(e) => {
-                    const v = Number(e.target.value)
-                    handleUpdate(`segmentationThreshold`, v as any)
-                  }}></input>
+                  <input
+                    defaultValue={get().segmentationThreshold} type={"number"} min={0} max={1} step={0.05} placeholder='segmentationThreshold'
+                    onChange={(e) => {
+                      const v = Number(e.target.value)
+                      handleUpdate(`segmentationThreshold`, v as any)
+                    }}></input>
 
-              </td>
-            </tr>
+                </td>
+              </tr>
+            </tbody>
           </table>
 
 
