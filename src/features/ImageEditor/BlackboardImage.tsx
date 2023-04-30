@@ -1,10 +1,9 @@
 
 import imageCompression from 'browser-image-compression'
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { createUseStyles } from 'react-jss'
 import { ImageEditorContext } from './ImageEditor'
 import { IconButton } from '@mui/material'
-import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import { ToolType } from './NavMenu'
 
 const BlackboardImage = () => {
@@ -13,6 +12,8 @@ const BlackboardImage = () => {
     const hideWhenView: ToolType[] = []//['background-remove']
 
     const shouldHide = ctx.toolName ? hideWhenView.includes(ctx.toolName) : true
+
+
 
     useEffect(() => {
         console.log("loading - image")
@@ -41,20 +42,14 @@ const BlackboardImage = () => {
 
 
 
-    const cleanCanvas = () => {
-        console.log(ctx)
-        // ctx.canvasContext.current?.clearRect(0, 0, ctx.canvasSize!.w, ctx.canvasSize!.h)
-    }
-
-
-
     return (
         <div className={style.imageBoard} style={shouldHide ? { display: "none" } : undefined}>
-            <div style={{ display: 'flex' }}>
-                <canvas width={ctx.canvasSize?.w} height={ctx.canvasSize?.h} style={{ border: '2px solid black', aspectRatio: 'auto', maxWidth: '100%' }} ref={ctx.canvas as any} />
-                <div style={ctx.toolName != 'draw' ? { display: 'none' } : undefined}>
-                    <IconButton onClick={cleanCanvas}> <CleaningServicesIcon fontSize="inherit" /></IconButton>
+            <div >
+                <div className={style.toolbox} style={ctx.toolName != 'draw' ? { display: 'none' } : undefined}>
+                    {ctx.toolboxItems}
                 </div>
+                <canvas width={ctx.canvasSize?.w} height={ctx.canvasSize?.h} style={{ border: '2px solid black', aspectRatio: 'auto', maxWidth: '100%' }} ref={ctx.canvas as any} />
+
             </div>
         </div>
     )
@@ -70,6 +65,10 @@ const useStyles = createUseStyles((theme) => {
             justifyContent: 'center',
             maxWidth: "1080px",
             margin: '0 auto'
+        },
+        toolbox: {
+            display: 'flex',
+            flexDirection: 'row'
         }
     })
 });

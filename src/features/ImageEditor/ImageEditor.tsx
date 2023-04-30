@@ -29,6 +29,9 @@ export type ImageEditorContextType = {
     setTool: (tool: JSX.Element | null) => void
     toolName: ToolType | null
     setToolName: (name: ToolType | null) => void
+    toolboxItems: JSX.Element | null
+    setToolboxItems: (elements: JSX.Element) => void
+
 }
 
 export const ImageEditorContext = createContext<ImageEditorContextType>({} as ImageEditorContextType)
@@ -42,8 +45,9 @@ const ImageEditor = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const canvasContextRef = useRef<CanvasRenderingContext2D | null>(null)
     const [fileName, setFileName] = useState<string | null>(null)
-    const [canvasSize, setCanvasSize] = useState<{ w: number, h: number } | null>({ w: 200, h: 200 })
+    const [canvasSize, setCanvasSize] = useState<{ w: number, h: number } | null>(null)
     const [tool, setTool] = useState<JSX.Element | null>(null)
+    const [toolboxItems, setToolboxItems] = useState<JSX.Element | null>(null)
     const style = useStyles()
 
     const loadPersonImg = async () => {
@@ -54,7 +58,6 @@ const ImageEditor = () => {
             type: 'image/jpg'
         };
         let file = new File([data], "/person.jpg", metadata);
-        // canvasContextRef.current?.drawImage(file,)
         imageCompression.drawFileInCanvas(file).then(([img, canv]) => {
             canvasContextRef.current?.drawImage(img, 0, 0)
             setActiveFile('original')
@@ -88,6 +91,9 @@ const ImageEditor = () => {
         setTool: (tool: JSX.Element | null) => setTool(tool),
         toolName,
         setToolName,
+        toolboxItems,
+        setToolboxItems,
+
     }
 
     console.log({ activeFile, canvasSize, ref: canvasRef.current, fileName, originalFile, processedFile, toolName })
