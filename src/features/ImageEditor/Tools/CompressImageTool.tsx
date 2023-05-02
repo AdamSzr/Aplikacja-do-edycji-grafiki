@@ -46,7 +46,6 @@ const CompressImageTool = () => {
         ctx.setProcessedFile(compressed)
 
     }
-    console.log(ctx.originalFile?.size, ctx.processedFile?.size)
 
     return (
         <div>
