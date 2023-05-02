@@ -11,8 +11,6 @@ const CompressImageTool = () => {
     const [compressionProgress, setCompressionProgress] = useState<number>(0)
     const [inProgress, setInProgress] = useState<boolean>(false)
     const [compressOpt, setCompressOpt] = useState<Options>({
-        // maxSizeMB: (ctx.originalFile?.size ?? 0) / oneMb,
-        // maxWidthOrHeight: 500,
         maxSizeMB: Infinity,
         useWebWorker: true,
         alwaysKeepResolution: true,
@@ -29,7 +27,6 @@ const CompressImageTool = () => {
 
 
     const compressionStrength = (procentage: number) => {
-        console.log({ procentage, originalSiz: ctx.originalFile?.size, expectedSiz: (ctx.originalFile?.size ?? 0) * (0.01 * procentage) })
         setCompressOpt(acc => {
             const nv = ({ ...acc, maxSizeMB: (ctx.originalFile?.size ?? 0) * (0.01 * procentage) / oneMb })
             return nv
@@ -47,7 +44,6 @@ const CompressImageTool = () => {
         setInProgress(true)
         const compressed = await compressFile(ctx.originalFile)
         ctx.setProcessedFile(compressed)
-        console.log({ compressed })
 
     }
     console.log(ctx.originalFile?.size, ctx.processedFile?.size)

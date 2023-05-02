@@ -13,13 +13,6 @@ const BlackboardImage = () => {
 
     const shouldHide = imgEditorContext.toolName ? hideWhenView.includes(imgEditorContext.toolName) : true
 
-
-
-    // useEffect(() => {
-    //     if (imgEditorContext.originalFile) {
-    //     }
-    // }, [imgEditorContext.originalFile])
-
     useEffect(() => {
 
         if (!imgEditorContext.activeFile) return
@@ -37,7 +30,6 @@ const BlackboardImage = () => {
                 ([imgEle, offsetCanvas]) => {
                     const bbCtx = imgEditorContext.canvasContext.current
                     const { width, height } = imgEditorContext.canvasSize!
-                    console.log(`drawing ${imgEditorContext.activeFile}`)
 
                     setTimeout(() => {
                         bbCtx?.drawImage(imgEle, 0, 0, width, height)

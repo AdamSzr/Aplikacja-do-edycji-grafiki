@@ -86,7 +86,6 @@ const DrawOnBoard = () => {
       const ctx = canvasContext.current!
       const { x, y } = lastPointPos.current
 
-      console.log('up', { offsetX, offsetY })
       const calcCenter = () => {
         const xAxes = (offsetX + x) / 2
         const yAxes = (offsetY + y) / 2
@@ -181,7 +180,6 @@ const DrawOnBoard = () => {
 
   const onLineWidthChange = (e: any) => {
     const lineWidth = Number(e.target.value)
-    console.log(lineWidth)
     setDrawOptions(it => ({ ...it, lineWidth }))
   }
 
