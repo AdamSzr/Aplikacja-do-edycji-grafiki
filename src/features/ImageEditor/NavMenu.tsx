@@ -25,8 +25,9 @@ const NavMenu = () => {
         setTimeout(() => {
             ctx.canvasContext.current?.drawImage(htmlImageElement, 0, 0)
         }, 100)
+        const { width, height } = htmlImageElement
+        ctx.setCanvasSize({ width, height })
         ctx.setFileName(imageFile.name)
-        ctx.setCanvasSize({ w: canvas.width, h: canvas.height })
         ctx.setActiveFile('original')
         ctx.setToolName('view')
         ctx.setPageName(`Edytujesz ${imageFile.name}`)
@@ -59,11 +60,6 @@ const NavMenu = () => {
                         <Button onClick={() => { ctx.setTool(< CanvasResize />); ctx.setToolName('img-resize') }} > zmiana rozmiaru</Button>
                         <Button onClick={clearData} >Wyczyść dane</Button>
                     </>
-                }
-                {ctx.processedFile && <>
-                    {/* <Button onClick={() => { ctx.setTool(<DiffComponent />);; ctx.setToolName('diff') }}>diff</Button> */}
-                    <Button onClick={clearData} >Wyczyść dane</Button>
-                </>
                 }
             </nav>
         </>

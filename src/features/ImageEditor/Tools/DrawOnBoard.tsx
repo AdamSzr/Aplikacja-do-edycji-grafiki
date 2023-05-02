@@ -15,50 +15,38 @@ export type DrawTool = "pen" | "circle" | "rectangle"
 export type DrawOptions = { color: string, lineWidth: number }
 
 const DrawOnBoard = () => {
-  const ctx = useContext(ImageEditorContext)
-  const { canvas, canvasContext } = ctx
+  const imgEditorCtx = useContext(ImageEditorContext)
+  const { canvas, canvasContext } = imgEditorCtx
   const lastPointPos = useRef<Point>()
   const isDrawing = useRef<boolean>(false)
   const [drawTool, setDrawTool] = useState<DrawTool | null>(null)
   const [drawOptions, setDrawOptions] = useState<DrawOptions>({ color: '#295432', lineWidth: 1 })
 
+  console.log(imgEditorCtx)
+
+
   const originalFile = useMemo(() => {
-    if (ctx.originalFile) {
-      return new File([ctx.originalFile!], 'copy.jpg')
+    if (imgEditorCtx.originalFile) {
+      console.log("update of originalFile")
+      return new File([imgEditorCtx.originalFile!], 'copy.jpg')
     }
   }, [])
 
-  // [originalFile, setOriginalFile] = useState<File | null>(null)
-
-
-  // useEffect(() => {
-  //   if (ctx.originalFile && !originalFile) {
-  //     const fileCpy = new File([ctx.originalFile!], 'copy.jpg')
-  //     setOriginalFile(fileCpy)
-  //     console.log("made cpy")
-  //   }
-  // }, [])
 
   const cleanCanvas = () => {
-    console.log(ctx)
+    console.log(imgEditorCtx)
     if (!originalFile) return
 
     imageCompression.drawFileInCanvas(originalFile)
       .then(
         ([imgEle, offsetCanvas]) => {
-          const baseCtx = ctx.canvasContext.current
-          console.log(`drawing ${ctx.activeFile}`)
-          const sizes = { w: imgEle.width, h: imgEle.height }
-          ctx.setCanvasSize(sizes)
-          // baseCtx?.clearRect(0, 0, sizes.w, sizes.h)
-
+          const bbCtx = imgEditorCtx.canvasContext.current
           setTimeout(() => {
-            baseCtx?.drawImage(offsetCanvas, 0, 0)
+            bbCtx?.drawImage(imgEle, 0, 0)
           }, 200);
 
         }
       )
-    // ctx.canvasContext.current?.clearRect(0, 0, ctx.canvasSize!.w, ctx.canvasSize!.h)
   }
 
   const drawRectangleEffect = () => {
@@ -74,7 +62,6 @@ const DrawOnBoard = () => {
 
       ctx.lineWidth = drawOptions.lineWidth
       ctx.strokeStyle = drawOptions.color
-      console.log({ drawOptions })
       ctx.rect(x, y, offsetX - x, offsetY - y);
       ctx.stroke();
       lastPointPos.current = undefined
@@ -120,7 +107,6 @@ const DrawOnBoard = () => {
     }
     const onMouseDown = ({ offsetX, offsetY }: MouseEvent) => {
       lastPointPos.current = { x: offsetX, y: offsetY }
-      console.log('down', { offsetX, offsetY })
       isDrawing.current = (true);
     }
     canvas.current?.addEventListener('mouseup', onMouseUp)
@@ -154,20 +140,18 @@ const DrawOnBoard = () => {
       return
     }
 
-    imageCompression.canvasToFile(canvas.current!, '', '', 1).then(file => {
-      ctx.setOriginalFile(file)
-      ctx.setActiveFile('original')
-    })
+    // imageCompression.canvasToFile(canvas.current!, '', '', 1).then(file => {
+    //   ctx.setOriginalFile(file)
+    //   ctx.setActiveFile('original')
+    // })
 
     if (drawTool == 'pen') {
       return drawLineEffect()
     }
     if (drawTool == 'rectangle') {
-      console.log('drawingRectangle')
       return drawRectangleEffect()
     }
     if (drawTool == 'circle') {
-      console.log('circle')
       return drawCircleEffect()
     }
 
@@ -191,7 +175,7 @@ const DrawOnBoard = () => {
   }
 
   useEffect(() => {
-    ctx.setToolboxItems(<>
+    imgEditorCtx.setToolboxItems(<>
       <IconButton onClick={cleanCanvas}> <CleaningServicesIcon fontSize="inherit" /></IconButton>
       <IconButton onClick={setToolPen} > <CreateIcon fontSize="inherit" /> </IconButton>
       <IconButton onClick={rectangle} > <RectangleIcon fontSize="inherit" /> </IconButton>
@@ -199,6 +183,7 @@ const DrawOnBoard = () => {
       <input onChange={onColorChange} type="color" defaultValue={drawOptions.color} />
       <input type='number' onChange={onLineWidthChange} defaultValue={drawOptions.lineWidth} min={1} />
     </>)
+    return imgEditorCtx.setToolboxItems(null)
   }, [])
 
 
@@ -229,7 +214,7 @@ const DrawOnBoard = () => {
 
     canvasContext.current.lineWidth = drawOptions.lineWidth
     canvasContext.current.strokeStyle = drawOptions.color
-    console.log({ drawOptions })
+
     canvasContext.current.moveTo(prevPoint.x, prevPoint.y);
     canvasContext.current.lineTo(point.x, point.y);
     canvasContext.current.stroke();

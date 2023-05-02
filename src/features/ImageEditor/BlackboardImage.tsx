@@ -2,52 +2,60 @@
 import imageCompression from 'browser-image-compression'
 import { useContext, useEffect } from 'react'
 import { createUseStyles } from 'react-jss'
-import { ImageEditorContext } from './ImageEditor'
+import { ImageEditorContext, ImageEditorContextType } from './ImageEditor'
 import { ToolType } from './NavMenu'
 import { Padding } from '@mui/icons-material'
 
 const BlackboardImage = () => {
     const style = useStyles()
-    const ctx = useContext(ImageEditorContext)
+    const imgEditorContext = useContext<ImageEditorContextType>(ImageEditorContext)
     const hideWhenView: ToolType[] = ['background-remove']//['background-remove']
 
-    const shouldHide = ctx.toolName ? hideWhenView.includes(ctx.toolName) : true
+    const shouldHide = imgEditorContext.toolName ? hideWhenView.includes(imgEditorContext.toolName) : true
 
 
+
+    // useEffect(() => {
+    //     if (imgEditorContext.originalFile) {
+    //     }
+    // }, [imgEditorContext.originalFile])
 
     useEffect(() => {
-        console.log("loading - image")
-        if (ctx.originalFile == undefined)
-            return
 
-        const showOriginal = ctx.activeFile == 'original'
+        if (!imgEditorContext.activeFile) return
 
-        imageCompression.drawFileInCanvas(showOriginal ? ctx.originalFile! : ctx.processedFile!)
+        if (!imgEditorContext.canvasSize) return
+
+
+        const fileToShow = imgEditorContext.activeFile == 'original' ? imgEditorContext.originalFile : imgEditorContext.processedFile
+
+        if (!fileToShow) throw Error(" wrong file selected")
+
+        imageCompression
+            .drawFileInCanvas(fileToShow)
             .then(
                 ([imgEle, offsetCanvas]) => {
-                    const baseCtx = ctx.canvasContext.current
-                    console.log(`drawing ${ctx.activeFile}`)
-                    const sizes = { w: imgEle.width, h: imgEle.height }
-                    ctx.setCanvasSize(sizes)
-                    // baseCtx?.clearRect(0, 0, sizes.w, sizes.h)
+                    const bbCtx = imgEditorContext.canvasContext.current
+                    const { width, height } = imgEditorContext.canvasSize!
+                    console.log(`drawing ${imgEditorContext.activeFile}`)
 
                     setTimeout(() => {
-                        baseCtx?.drawImage(offsetCanvas, 0, 0)
+                        bbCtx?.drawImage(imgEle, 0, 0, width, height)
                     }, 200);
 
                 }
             )
 
-    }, [ctx.activeFile])
+    }, [imgEditorContext.canvasSize || imgEditorContext.originalFile])
 
 
     return (
         <div className={style.imageBoard} style={shouldHide ? { display: "none" } : undefined}>
             <div >
-                <div className={style.toolbox} style={ctx.toolName != 'draw' ? { display: 'none' } : undefined}>
-                    {ctx.toolboxItems}
+                <div className={style.toolbox} style={imgEditorContext.toolName != 'draw' ? { display: 'none' } : undefined}>
+                    {imgEditorContext.toolboxItems}
                 </div>
-                <canvas width={ctx.canvasSize?.w} height={ctx.canvasSize?.h} style={{ border: '2px solid black', aspectRatio: 'auto', maxWidth: '100%' }} ref={ctx.canvas as any} />
+                <canvas width={imgEditorContext.canvasSize?.width} height={imgEditorContext.canvasSize?.height} style={{ border: '2px solid black', aspectRatio: 'auto', maxWidth: '100%' }} ref={imgEditorContext.canvas as any} />
 
             </div>
         </div>
