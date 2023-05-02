@@ -22,8 +22,6 @@ const DrawOnBoard = () => {
   const [drawTool, setDrawTool] = useState<DrawTool | null>(null)
   const [drawOptions, setDrawOptions] = useState<DrawOptions>({ color: '#295432', lineWidth: 1 })
 
-  console.log(imgEditorCtx)
-
 
   const originalFile = useMemo(() => {
     if (imgEditorCtx.originalFile) {
@@ -98,13 +96,13 @@ const DrawOnBoard = () => {
       const [centerX, centerY, radius] = calcCenter()
       ctx.beginPath();
 
-      console.log([centerX, centerY, radius, 0, 2 * Math.PI])
       ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI)
       ctx.lineWidth = drawOptions.lineWidth
       ctx.strokeStyle = drawOptions.color
       ctx.stroke();
       lastPointPos.current = undefined
     }
+
     const onMouseDown = ({ offsetX, offsetY }: MouseEvent) => {
       lastPointPos.current = { x: offsetX, y: offsetY }
       isDrawing.current = (true);
@@ -139,11 +137,6 @@ const DrawOnBoard = () => {
       console.log("canvas-not-initialized")
       return
     }
-
-    // imageCompression.canvasToFile(canvas.current!, '', '', 1).then(file => {
-    //   ctx.setOriginalFile(file)
-    //   ctx.setActiveFile('original')
-    // })
 
     if (drawTool == 'pen') {
       return drawLineEffect()
@@ -183,7 +176,6 @@ const DrawOnBoard = () => {
       <input onChange={onColorChange} type="color" defaultValue={drawOptions.color} />
       <input type='number' onChange={onLineWidthChange} defaultValue={drawOptions.lineWidth} min={1} />
     </>)
-    return imgEditorCtx.setToolboxItems(null)
   }, [])
 
 

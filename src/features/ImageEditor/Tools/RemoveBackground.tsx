@@ -22,11 +22,9 @@ const RemoveBackground = () => {
   tf.setBackend('cpu')
 
   useEffect(() => {
+    if (!isBackgroundProcessed) return
 
-    if (isBackgroundProcessed == true) {
-      resetCanvas()
-      console.log("bg-removed")
-    }
+    resetCanvas()
   }, [get()])
 
 
@@ -36,24 +34,24 @@ const RemoveBackground = () => {
     }
   }, [processorCanvas.current])
 
+
   useEffect(() => {
-    console.log({ imgEditorCtx })
-    if (processorCanvas.current != undefined) {
-      imageCompression.drawFileInCanvas(imgEditorCtx.originalFile!)
-        .then(
-          ([imgEle, offsetCanvas]) => {
+    if (!processorCanvas.current) return
 
-            const { width, height } = imgEle
+    imageCompression
+      .drawFileInCanvas(imgEditorCtx.originalFile!)
+      .then(
+        ([imgEle, offsetCanvas]) => {
 
-            setTimeout(() => {
-              console.log({ curr: processorCanvas2D.current })
-              if (processorCanvas2D.current)
-                processorCanvas2D.current.drawImage(imgEle, 0, 0, width, height)
-            }, 200);
+          const { width, height } = imgEle
 
-          }
-        )
-    }
+          setTimeout(() => {
+            if (processorCanvas2D.current)
+              processorCanvas2D.current.drawImage(imgEle, 0, 0, width, height)
+          }, 100);
+
+        }
+      )
 
   }, [])
 
@@ -63,15 +61,13 @@ const RemoveBackground = () => {
     imageCompression.drawFileInCanvas(imgEditorCtx.originalFile!)
       .then(
         ([imgEle, offsetCanvas]) => {
-          const bbCtx2D = processorCanvas.current?.getContext('2d')
           console.log('drawing original')
-          const sizes = { width: imgEle.width, height: imgEle.height }
-          console.log({ sizes })
-          imgEditorCtx.setCanvasSize(sizes)
-
+          // const { width, height } = imgEle
+          // const sizes = { width, height }
+          // console.log({ sizes })
+          // imgEditorCtx.setCanvasSize(sizes)
           setTimeout(() => {
-
-            bbCtx2D?.drawImage(imgEle, 0, 0)
+            processorCanvas2D.current?.drawImage(imgEle, 0, 0)
           }, 200);
 
         }
@@ -111,15 +107,9 @@ const RemoveBackground = () => {
   const downloadImg = () => {
     if (!processorCanvas.current) return
 
-
     downloadImgFromCanvas(processorCanvas.current)
-    // processorCanvas2D.current?.getImageData(0, 0, imgEditorCtx.canvasSize?.width, imgEditorCtx.canvasSize?.height)
-
-
   }
 
-  // if (!imgEditorCtx.canvasSize) return
-  // console.log(imgEditorCtx.canvasSize)
 
   return (
     <div>

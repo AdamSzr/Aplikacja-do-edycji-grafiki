@@ -48,11 +48,10 @@ const BlackboardImage = () => {
 
     }, [imgEditorContext.canvasSize || imgEditorContext.originalFile])
 
-
     return (
         <div className={style.imageBoard} style={shouldHide ? { display: "none" } : undefined}>
             <div >
-                <div className={style.toolbox} style={imgEditorContext.toolName != 'draw' ? { display: 'none' } : undefined}>
+                <div className={style.toolbox} style={imgEditorContext.toolName == 'draw' ? undefined : { display: 'none' }}>
                     {imgEditorContext.toolboxItems}
                 </div>
                 <canvas width={imgEditorContext.canvasSize?.width} height={imgEditorContext.canvasSize?.height} style={{ border: '2px solid black', aspectRatio: 'auto', maxWidth: '100%' }} ref={imgEditorContext.canvas as any} />
