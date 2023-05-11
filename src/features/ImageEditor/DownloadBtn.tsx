@@ -9,7 +9,7 @@ const DownloadBtn = () => {
 
     const ctx = useContext(ImageEditorContext)
     const tool = ctx.toolName
-    const hideWhenView: ToolType[] = ['background-remove'] //['background-remove']
+    const hideWhenView: ToolType[] = ['background-remove'] // ['background-remove']
 
     const shouldHide = ctx.toolName ? hideWhenView.includes(ctx.toolName) : true
     const downloadCanvasImgInViews = ['draw', 'img-resize', 'compression'] as ToolType[]

@@ -1,7 +1,6 @@
 
 import { Slider } from '@mui/material'
-import imageCompression from 'browser-image-compression'
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { ImageEditorContext } from '../ImageEditor'
 
 
