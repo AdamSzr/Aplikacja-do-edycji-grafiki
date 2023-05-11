@@ -48,8 +48,6 @@ const NavMenu = () => {
         ctx.setToolName(null)
     }
 
-    console.log({ r }, r.asPath)
-
     const isBgRemove = r.asPath.includes(`background-remove`) ? true : false
 
 
