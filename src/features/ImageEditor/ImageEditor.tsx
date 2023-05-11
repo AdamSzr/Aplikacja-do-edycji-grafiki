@@ -9,6 +9,7 @@ import ContentContainer from '../../components/ContentContainer/ContentContainer
 import DownloadBtn from './DownloadBtn';
 import Head from 'next/head';
 import { AppConfig } from '@/src/config';
+import { useRouter } from 'next/router';
 
 export type CanvasSize = { width: number, height: number }
 export type ActiveFile = "original" | 'processed' | undefined
@@ -37,11 +38,14 @@ export type ImageEditorContextType = {
 export const ImageEditorContext = createContext<ImageEditorContextType>({} as ImageEditorContextType)
 
 const ImageEditor = () => {
+    const r = useRouter()
+    const isBgRemove = r.asPath.includes(`background-remove`) ? true : false
+
     const [pageName, setPageName] = useState<string>("Prymitywny edytor zdjęć")
     const [originalFile, setOriginalFile] = useState<File | null>(null)
     const [processedFile, setProcessedFile] = useState<File | null>(null)
     const [activeFile, setActiveFile] = useState<ActiveFile | null>(null)
-    const [toolName, setToolName] = useState<ToolType | null>(null)
+    const [toolName, setToolName] = useState<ToolType | null>(isBgRemove ? 'background-remove' : null)
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const canvasContextRef = useRef<CanvasRenderingContext2D | null>(null)
     const [fileName, setFileName] = useState<string | null>(null)
@@ -59,7 +63,7 @@ const ImageEditor = () => {
             const { width, height } = img
             setCanvasSize({ width, height })
             setActiveFile('original')
-            setToolName('view')
+            setToolName(isBgRemove ? "background-remove" : 'view')
             setOriginalFile(file)
         })
     }
@@ -67,7 +71,6 @@ const ImageEditor = () => {
     useEffect(() => {
         if (canvasRef.current != null && canvasContextRef.current == null)
             canvasContextRef.current = canvasRef.current.getContext('2d')
-
 
         if (AppConfig.isDevMode && !originalFile)
             loadPersonImg().then()
@@ -97,7 +100,7 @@ const ImageEditor = () => {
 
     }
 
-    console.log({ activeFile, toolName, originalFile, processedFile }, canvasSize)
+    console.log({ contextValue })
 
     return (
         <ImageEditorContext.Provider value={contextValue} >

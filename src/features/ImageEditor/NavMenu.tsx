@@ -9,12 +9,15 @@ import { DiffComponent } from './Tools/DiffComponent'
 import DrawOnBoard from './Tools/DrawOnBoard'
 import RemoveBackground from './Tools/RemoveBackground'
 import { BACKGROUND } from '../theme/colors'
+import { useRouter } from 'next/router'
 
 
 export type ToolType = "img-resize" | "compression" | "draw" | "background-remove" | 'diff' | "view"
 
 const NavMenu = () => {
     const ctx = useContext(ImageEditorContext)
+
+    const r = useRouter()
 
     const style = useStyles()
 
@@ -45,24 +48,39 @@ const NavMenu = () => {
         ctx.setToolName(null)
     }
 
+    console.log({ r }, r.asPath)
+
+    const isBgRemove = r.asPath.includes(`background-remove`) ? true : false
 
 
     return (
-        <>
-            <nav className={style.navMenu}>
-                {!ctx.originalFile && <input type='file' onChange={onFileInputChange} />}
+        isBgRemove ?
+            <>
+                <nav className={style.navMenu}>
+                    {!ctx.originalFile && <input type='file' onChange={onFileInputChange} />}
+                    {
+                        ctx.originalFile && <>
+                            <Button onClick={() => { ctx.setTool(<RemoveBackground />); ctx.setToolName('background-remove') }}> usuwanie tla </Button>
+                            <Button onClick={clearData} >Wyczyść dane</Button>
+                        </>
+                    }
+                </nav>
+            </>
+            : <>
+                <nav className={style.navMenu}>
+                    {!ctx.originalFile && <input type='file' onChange={onFileInputChange} />}
 
-                <Button onClick={() => { ctx.setTool(<DrawOnBoard />); ctx.setToolName('draw') }} > rysuj </Button>
-                {
-                    ctx.originalFile && <>
-                        <Button onClick={() => { ctx.setTool(<CompressImageTool />); ctx.setToolName('compression') }}> kompresja </Button>
-                        <Button onClick={() => { ctx.setTool(<RemoveBackground />); ctx.setToolName('background-remove') }}> usuwanie tla </Button>
-                        <Button onClick={() => { ctx.setTool(< CanvasResize />); ctx.setToolName('img-resize') }} > zmiana rozmiaru</Button>
-                        <Button onClick={clearData} >Wyczyść dane</Button>
-                    </>
-                }
-            </nav>
-        </>
+                    <Button onClick={() => { ctx.setTool(<DrawOnBoard />); ctx.setToolName('draw') }} > rysuj </Button>
+                    {
+                        ctx.originalFile && <>
+                            <Button onClick={() => { ctx.setTool(<CompressImageTool />); ctx.setToolName('compression') }}> kompresja </Button>
+                            <Button onClick={() => { r.push("/background-remove") }}> usuwanie tla </Button>
+                            <Button onClick={() => { ctx.setTool(< CanvasResize />); ctx.setToolName('img-resize') }} > zmiana rozmiaru</Button>
+                            <Button onClick={clearData} >Wyczyść dane</Button>
+                        </>
+                    }
+                </nav>
+            </>
     )
 }
 
