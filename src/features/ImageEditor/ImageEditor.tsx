@@ -57,7 +57,7 @@ const ImageEditor = () => {
     const loadPersonImg = async () => {
         let response = await fetch('/person.jpg')
         let data = await response.blob();
-        let file = new File([data], "/person.jpg");
+        let file = new File([data], "/person.jpg",{ type : 'image/jpeg' });
 
         imageCompression.drawFileInCanvas(file).then(([img, canv]) => {
             const { width, height } = img

@@ -13,6 +13,7 @@ const CompressImageTool = () => {
     const [compressOpt, setCompressOpt] = useState<Options>({
         maxSizeMB: Infinity,
         useWebWorker: true,
+
         alwaysKeepResolution: true,
         maxIteration: 1000,
         onProgress: (e) => {
