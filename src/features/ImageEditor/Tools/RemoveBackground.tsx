@@ -61,9 +61,14 @@ const RemoveBackground = () => {
     imageCompression.drawFileInCanvas(imgEditorCtx.originalFile!)
       .then(
         ([imgEle, offsetCanvas]) => {
+          console.log('drawing original')
+          // const { width, height } = imgEle
+          // const sizes = { width, height }
+          // console.log({ sizes })
+          // imgEditorCtx.setCanvasSize(sizes)
           setTimeout(() => {
             processorCanvas2D.current?.drawImage(imgEle, 0, 0)
-          }, 100);
+          }, 200);
 
         }
       )
@@ -101,6 +106,7 @@ const RemoveBackground = () => {
 
   const downloadImg = () => {
     if (!processorCanvas.current) return
+
     downloadImgFromCanvas(processorCanvas.current)
   }
 
