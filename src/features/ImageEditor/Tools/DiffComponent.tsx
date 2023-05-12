@@ -1,7 +1,6 @@
 import imageCompression from 'browser-image-compression'
 import React, { PropsWithChildren, useContext, useEffect, useRef, useState } from 'react'
 import { ImageEditorContext } from '../ImageEditor'
-import parseSizeToHumanReadable from '@/src/utils/parseSizeToHumanReadable'
 
 export const DiffComponent = () => {
     const ctx = useContext(ImageEditorContext)
@@ -67,13 +66,13 @@ export const DiffComponent = () => {
     return (
         <div style={{ display: 'grid', gridTemplateColumns: "1fr 1fr", gridGap: '10px' }}>
             <ImageContainer>
-                <h2> Oryginalny obraz {parseSizeToHumanReadable(ctx.originalFile?.size ?? 0)}</h2>
+                <h2> Oryginalny obraz</h2>
                 {/* {oimgElement} */}
                 <canvas ref={orginalRef as any} width={ctx.canvasSize?.w} style={{ aspectRatio: 'auto', width: '100%' }} height={ctx.canvasSize?.h} />
             </ImageContainer>
             <ImageContainer>
 
-                <h2 > Skompresowany o obraz  {parseSizeToHumanReadable(ctx.processedFile?.size ?? 0)}</h2>
+                <h2 > Skompresowany o obraz</h2>
                 <canvas ref={processedRef as any} width={ctx.canvasSize?.w} style={{ aspectRatio: 'auto', width: '100%' }} height={ctx.canvasSize?.h} />
             </ImageContainer>
         </div>
