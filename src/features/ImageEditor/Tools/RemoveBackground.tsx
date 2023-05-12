@@ -124,7 +124,10 @@ const RemoveBackground = () => {
             <tbody>
 
               <tr>
-                <td>architecture
+                <td title='
+                "architecture": BodyPixArchitecture. It determines which BodyPix architecture
+                to load. The supported architectures are: MobileNetV1 and ResNet50.'>
+                  architecture
                 </td>
                 <td>
                   <select
@@ -139,7 +142,11 @@ const RemoveBackground = () => {
                 </td>
               </tr>
               <tr>
-                <td>
+                <td title=' * `outputStride`: Specifies the output stride of the BodyPix model.
+ * The smaller the value, the larger the output resolution, and more accurate
+ * the model at the cost of speed. Set this to a larger value to increase speed
+ * at the cost of accuracy. Stride 32 is supported for ResNet and
+ * stride 8,16,32 are supported for various MobileNetV1 models.'>
                   outputStride
                 </td>
                 <td>
@@ -157,7 +164,11 @@ const RemoveBackground = () => {
                 </td>
               </tr>
               <tr>
-                <td>
+                <td title=" * `quantBytes`: An optional number with values: 1, 2, or 4.  This parameter
+ * affects weight quantization in the models. The available options are
+ * 1 byte, 2 bytes, and 4 bytes. The higher the value, the larger the model size
+ * and thus the longer the loading time, the lower the value, the shorter the
+ * loading time but lower the accuracy.">
                   quantBytes
                 </td>
                 <td>
@@ -173,7 +184,13 @@ const RemoveBackground = () => {
                 </td>
               </tr>
               <tr>
-                <td>
+                <td title="* `internalResolution`: Defaults to 'medium'. The internal resolution
+ * percentage that the input is resized to before inference. The larger the
+ * internalResolution the more accurate the model at the cost of slower
+ * prediction times. Available values are 'low', 'medium', 'high', 'full', or a
+ * percentage value between 0 and 1. The values 'low', 'medium', 'high', and
+ * 'full' map to 0.25, 0.5, 0.75, and 1.0 correspondingly.
+ *">
                   internalResolution
                 </td>
                 <td>
@@ -194,7 +211,12 @@ const RemoveBackground = () => {
                 </td>
               </tr>
               <tr>
-                <td>
+                <td title=' * `segmentationThreshold`: The minimum that segmentation values must
+ * have to be considered part of the person. Affects the generation of the
+ * segmentation mask. More specifically, it is the threshold used to binarize
+ * the intermediate person segmentation probability. The probability of each
+ * pixel belongs to a person is in range [0, 1]. If the probability is greater
+ * than the `segmentationThreshold`, it will be set to 1 otherwise 0.'>
                   segmentationThreshold
                 </td>
                 <td>
