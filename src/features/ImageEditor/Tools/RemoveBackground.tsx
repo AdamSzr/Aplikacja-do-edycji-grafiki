@@ -85,10 +85,10 @@ const RemoveBackground = () => {
     const net = await bodyPix.load(get())
     const segmentation = await net.segmentPerson(canvas, get())
 
-    const ctx2d = canvas.getContext('2d')!
-    const { data: imgData } = ctx2d.getImageData(0, 0, canvas.width, canvas.height)
+    const ctx = canvas.getContext('2d')!
+    const { data: imgData } = ctx.getImageData(0, 0, canvas.width, canvas.height)
 
-    const newImg = ctx2d.createImageData(canvas.width, canvas.height)
+    const newImg = ctx.createImageData(canvas.width, canvas.height)
     const newImgData = newImg.data
 
     segmentation.data.forEach((segment, i) => {
@@ -100,7 +100,7 @@ const RemoveBackground = () => {
       }
     })
 
-    ctx2d.putImageData(newImg, 0, 0)
+    ctx.putImageData(newImg, 0, 0)
     setIsBackgroundProcessed(true)
   }
 

@@ -149,10 +149,6 @@ const DrawOnBoard = () => {
 
 
   useEffect(() => {
-    if (!canvas.current) {
-      console.log("canvas-not-initialized")
-      return
-    }
 
     imageCompression.canvasToFile(canvas.current!, '', '', 1).then(file => {
       ctx.setOriginalFile(file)
