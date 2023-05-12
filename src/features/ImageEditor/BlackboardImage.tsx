@@ -12,18 +12,22 @@ const BlackboardImage = () => {
     const hideWhenView: ToolType[] = ['background-remove']//['background-remove']
 
     const shouldHide = imgEditorContext.toolName ? hideWhenView.includes(imgEditorContext.toolName) : true
+    useEffect(() =>{
+       reloadCanvasImage()
+    },[imgEditorContext.activeFile])
 
     useEffect(() => {
+        reloadCanvasImage()
+    }, [imgEditorContext.canvasSize || imgEditorContext.originalFile ])
 
+
+    const reloadCanvasImage = () =>{
         if (!imgEditorContext.activeFile) return
-
         if (!imgEditorContext.canvasSize) return
-
 
         const fileToShow = imgEditorContext.activeFile == 'original' ? imgEditorContext.originalFile : imgEditorContext.processedFile
 
         if (!fileToShow) throw Error(" wrong file selected")
-
         imageCompression
             .drawFileInCanvas(fileToShow)
             .then(
@@ -38,7 +42,7 @@ const BlackboardImage = () => {
                 }
             )
 
-    }, [imgEditorContext.canvasSize || imgEditorContext.originalFile])
+    }
 
     return (
         <div className={style.imageBoard} style={shouldHide ? { display: "none" } : undefined}>
