@@ -10,7 +10,7 @@ import DownloadBtn from './DownloadBtn';
 import Head from 'next/head';
 import { AppConfig } from '@/src/config';
 
-export type CanvasSize = { width: number, height: number }
+export type CanvasSize = { w: number, h: number }
 export type ActiveFile = "original" | 'processed' | undefined
 export type ImageEditorContextType = {
     setPageName: (newName: string) => void,
@@ -30,7 +30,7 @@ export type ImageEditorContextType = {
     toolName: ToolType | null
     setToolName: (name: ToolType | null) => void
     toolboxItems: JSX.Element | null
-    setToolboxItems: (elements: JSX.Element | null) => void
+    setToolboxItems: (elements: JSX.Element) => void
 
 }
 
@@ -45,7 +45,7 @@ const ImageEditor = () => {
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     const canvasContextRef = useRef<CanvasRenderingContext2D | null>(null)
     const [fileName, setFileName] = useState<string | null>(null)
-    const [canvasSize, setCanvasSize] = useState<CanvasSize | null>(null)
+    const [canvasSize, setCanvasSize] = useState<{ w: number, h: number } | null>(null)
     const [tool, setTool] = useState<JSX.Element | null>(null)
     const [toolboxItems, setToolboxItems] = useState<JSX.Element | null>(null)
     const style = useStyles()
@@ -53,11 +53,12 @@ const ImageEditor = () => {
     const loadPersonImg = async () => {
         let response = await fetch('/person.jpg')
         let data = await response.blob();
-        let file = new File([data], "/person.jpg");
-
+        let metadata = {
+            type: 'image/jpg'
+        };
+        let file = new File([data], "/person.jpg", metadata);
         imageCompression.drawFileInCanvas(file).then(([img, canv]) => {
-            const { width, height } = img
-            setCanvasSize({ width, height })
+            canvasContextRef.current?.drawImage(img, 0, 0)
             setActiveFile('original')
             setToolName('view')
             setOriginalFile(file)
@@ -65,20 +66,18 @@ const ImageEditor = () => {
     }
 
     useEffect(() => {
-        if (canvasRef.current != null && canvasContextRef.current == null)
+        if (canvasRef.current != null)
             canvasContextRef.current = canvasRef.current.getContext('2d')
-
 
         if (AppConfig.isDevMode && !originalFile)
             loadPersonImg().then()
-
     }, [canvasRef.current])
 
 
     const contextValue: ImageEditorContextType = {
         setPageName: (name) => setPageName(name),
         activeFile,
-        setCanvasSize: (size) => { console.log(`settingSize -> [${size}]`); setCanvasSize(size) },
+        setCanvasSize: (size) => setCanvasSize(size),
         canvasSize,
         originalFile,
         processedFile,
@@ -97,7 +96,7 @@ const ImageEditor = () => {
 
     }
 
-    console.log({ activeFile, toolName, originalFile, processedFile }, canvasSize)
+    console.log({ activeFile, toolName })
 
     return (
         <ImageEditorContext.Provider value={contextValue} >

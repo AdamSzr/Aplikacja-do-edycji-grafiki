@@ -1,9 +1,10 @@
-import parseSizeToHumanReadable from '@/src/utils/parseSizeToHumanReadable';
-import { Button, Slider } from '@mui/material';
+import { Button, LinearProgress, Slider, Typography } from '@mui/material';
 import imageCompression, { Options } from 'browser-image-compression';
-import { useContext, useState } from 'react';
-import LinearProgressWithLabel from '../../../components/LinearProgressWithLabel';
+import React, { useContext, useEffect, useState } from 'react'
 import { ImageEditorContext } from '../ImageEditor';
+import FileSizeDisplay from './FileSizeDisplay';
+import LinearProgressWithLabel from '../../../components/LinearProgressWithLabel';
+import parseSizeToHumanReadable from '@/src/utils/parseSizeToHumanReadable';
 
 const CompressImageTool = () => {
     const oneMb = 1_000_000
@@ -38,6 +39,9 @@ const CompressImageTool = () => {
 
     const compressFile = async (imageFile: File, options: Options = compressOpt) => {
         const compressedFile = await imageCompression(imageFile, options);
+
+        // console.log('compressedFile instanceof Blob', compressedFile instanceof Blob, options); // true
+        // console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
         return compressedFile
     }
 
@@ -74,10 +78,10 @@ const CompressImageTool = () => {
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <table style={{
                 }} >
-                    <tr>
-                        <th>plik</th>
-                        <th>rozmiar pliku</th>
-                    </tr>
+                    <th>
+                        <td>plik</td>
+                        <td>rozmiar pliku</td>
+                    </th>
                     <tr>
                         <td>oryginalny</td>
                         <td>{parseSizeToHumanReadable(ctx.originalFile?.size ?? 0)}</td>

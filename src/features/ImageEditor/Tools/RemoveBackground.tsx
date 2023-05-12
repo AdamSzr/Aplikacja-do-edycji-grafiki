@@ -1,54 +1,49 @@
 
 import * as bodyPix from '@tensorflow-models/body-pix';
 import imageCompression from 'browser-image-compression';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ImageEditorContext, ImageEditorContextType } from '../ImageEditor';
 
 import defaultMlConfig from '@/src/utils/defaultMlConfig';
 import { Button } from '@mui/material';
 import * as tf from '@tensorflow/tfjs';
 import useFormFieldsUpdater from '../../objectUpdater';
-import downloadImgFromCanvas from '@/src/utils/downloadImgFromCanvas';
 
 
 
 const RemoveBackground = () => {
-  const imgEditorCtx = useContext<ImageEditorContextType>(ImageEditorContext)
-  const processorCanvas = useRef<HTMLCanvasElement | null>()  // imgEditorCtx.canvas.current?.getContext('2d')
-  const processorCanvas2D = useRef<CanvasRenderingContext2D | null>()
+  const ctx = useContext<ImageEditorContextType>(ImageEditorContext)
+  const canvasRef = ctx.canvas
   const [isBackgroundProcessed, setIsBackgroundProcessed] = useState(false)
 
   const [handleUpdate, get] = useFormFieldsUpdater(defaultMlConfig())
-  tf.setBackend('cpu')
+
 
   useEffect(() => {
 
     if (isBackgroundProcessed == true) {
       resetCanvas()
-      console.log("bg-removed")
     }
   }, [get()])
 
-
   useEffect(() => {
-    if (processorCanvas.current != null && !processorCanvas2D.current) {
-      processorCanvas2D.current = processorCanvas.current?.getContext('2d')
-    }
-  }, [processorCanvas.current])
+    tf.setBackend('cpu')
+    if (canvasRef.current != undefined) {
 
-  useEffect(() => {
-    console.log({ imgEditorCtx })
-    if (processorCanvas.current != undefined) {
-      imageCompression.drawFileInCanvas(imgEditorCtx.originalFile!)
+      imageCompression.drawFileInCanvas(ctx.originalFile!)
         .then(
           ([imgEle, offsetCanvas]) => {
-
-            const { width, height } = imgEle
+            const baseCtx = canvasRef.current?.getContext(`2d`)
+            console.log('drawing original')
+            const sizes = { w: imgEle.width, h: imgEle.height }
+            console.log({ sizes })
+            canvasRef.current!.width = sizes.w
+            canvasRef.current!.height = sizes.h
+            ctx.setCanvasSize(sizes)
+            baseCtx?.clearRect(0, 0, sizes.w, sizes.h)
 
             setTimeout(() => {
-              console.log({ curr: processorCanvas2D.current })
-              if (processorCanvas2D.current)
-                processorCanvas2D.current.drawImage(imgEle, 0, 0, width, height)
+              baseCtx?.drawImage(imgEle, 0, 0)
             }, 200);
 
           }
@@ -60,18 +55,20 @@ const RemoveBackground = () => {
 
   const resetCanvas = () => {
     setIsBackgroundProcessed(false)
-    imageCompression.drawFileInCanvas(imgEditorCtx.originalFile!)
+    imageCompression.drawFileInCanvas(ctx.originalFile!)
       .then(
         ([imgEle, offsetCanvas]) => {
-          const bbCtx2D = processorCanvas.current?.getContext('2d')
+          const baseCtx = canvasRef.current?.getContext(`2d`)
           console.log('drawing original')
-          const sizes = { width: imgEle.width, height: imgEle.height }
+          const sizes = { w: imgEle.width, h: imgEle.height }
           console.log({ sizes })
-          imgEditorCtx.setCanvasSize(sizes)
+          canvasRef.current!.width = sizes.w
+          canvasRef.current!.height = sizes.h
+          ctx.setCanvasSize(sizes)
 
           setTimeout(() => {
 
-            bbCtx2D?.drawImage(imgEle, 0, 0)
+            baseCtx?.drawImage(imgEle, 0, 0)
           }, 200);
 
         }
@@ -81,17 +78,17 @@ const RemoveBackground = () => {
 
 
   const backgroundRemoval = async () => {
-    const bbCanvas = processorCanvas.current
-    const bbCanvas2D = processorCanvas2D.current
-    if (!bbCanvas || !bbCanvas2D)
+    if (!canvasRef || !canvasRef.current)
       return
+    const canvas = canvasRef.current
 
     const net = await bodyPix.load(get())
-    const segmentation = await net.segmentPerson(bbCanvas, get())
+    const segmentation = await net.segmentPerson(canvas, get())
 
-    const { data: imgData } = bbCanvas2D.getImageData(0, 0, bbCanvas.width, bbCanvas.height)
+    const ctx2d = canvas.getContext('2d')!
+    const { data: imgData } = ctx2d.getImageData(0, 0, canvas.width, canvas.height)
 
-    const newImg = bbCanvas2D.createImageData(bbCanvas.width, bbCanvas.height)
+    const newImg = ctx2d.createImageData(canvas.width, canvas.height)
     const newImgData = newImg.data
 
     segmentation.data.forEach((segment, i) => {
@@ -103,31 +100,16 @@ const RemoveBackground = () => {
       }
     })
 
-    bbCanvas2D.putImageData(newImg, 0, 0)
+    ctx2d.putImageData(newImg, 0, 0)
     setIsBackgroundProcessed(true)
   }
 
-
-  const downloadImg = () => {
-    if (!processorCanvas.current) return
-
-
-    downloadImgFromCanvas(processorCanvas.current)
-    // processorCanvas2D.current?.getImageData(0, 0, imgEditorCtx.canvasSize?.width, imgEditorCtx.canvasSize?.height)
-
-
-  }
-
-  // if (!imgEditorCtx.canvasSize) return
-  // console.log(imgEditorCtx.canvasSize)
 
   return (
     <div>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ margin: "0 auto" }}>
-
-          <canvas ref={processorCanvas as any} height={imgEditorCtx.canvasSize?.height} width={imgEditorCtx.canvasSize?.width} />
-
+          <canvas ref={canvasRef as any} height={ctx.canvasSize?.h} width={ctx.canvasSize?.w} />
         </div>
         <div style={{
           display: `flex`,
@@ -135,7 +117,7 @@ const RemoveBackground = () => {
         }}>
           <table style={{ borderSpacing: `10px` }}>
             <thead>
-              <tr style={{ fontWeight: '700' }}><th>opcja</th><th>ustawienia</th></tr>
+              <tr style={{ fontWeight: '700' }}> <td>opcja</td><td>ustawienia</td></tr>
             </thead>
             <tbody>
 
@@ -237,8 +219,6 @@ const RemoveBackground = () => {
           <Button variant='contained' style={isBackgroundProcessed ? { display: 'none' } : undefined} onClick={backgroundRemoval}> usuń tło </Button>
           {/* <button style={restoreBaseImg ? undefined : { display: 'none' }} onClick={downloadProcessedImg}> pobierz </button> */}
           <Button variant='contained' color='success' style={isBackgroundProcessed ? undefined : { display: 'none' }} onClick={resetCanvas}> resetuj </Button>
-          <Button variant='contained' color='success' style={isBackgroundProcessed ? undefined : { display: 'none' }} onClick={downloadImg}> pobierz </Button>
-
 
         </div >
       </div>

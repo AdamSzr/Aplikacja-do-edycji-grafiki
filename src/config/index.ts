@@ -1,5 +1,5 @@
 
 
 export const AppConfig = {
-    isDevMode: true
+    isDevMode: false
 }

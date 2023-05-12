@@ -1,44 +1,48 @@
 
-import { Slider } from '@mui/material'
-import imageCompression from 'browser-image-compression'
-import { useContext, useState } from 'react'
+import { Button, Slider } from '@mui/material'
+import React, { useContext, useState } from 'react'
+import BlackboardImage from '../BlackboardImage'
 import { ImageEditorContext } from '../ImageEditor'
+import CompressImageTool from './CompressImageTool'
+import imageCompression from 'browser-image-compression'
 
 
 export type SliderEventValue = { value: number, name?: string }
 
 const CanvasResize = () => {
     const ctx = useContext(ImageEditorContext)
+    const [oryginalSize, setOryginalSize] = useState(ctx.canvasSize)
 
-    const handleSliderChange = (event: Event) => {
+    const handleSliderChange = (event: Event) => { // MouseEvent
         console.log({ event, tg: event.target })
         const { value, name } = event.target as unknown as SliderEventValue
         if (name == "width-slider") {
-            const newSize = { width: value, height: ctx.canvasSize?.height ?? 0 }
+            const newSize = { w: value, h: ctx.canvasSize?.h ?? 0 }
             ctx.setCanvasSize(newSize)
         }
         if (name == "height-slider") {
-            const newSize = { width: ctx.canvasSize?.width ?? 0, height: value }
+            const newSize = { w: ctx.canvasSize?.w ?? 0, h: value }
             ctx.setCanvasSize(newSize)
         }
-        // draw()
+        draw()
     }
 
     const draw = async () => {
         console.log("draw")
         const [canv, image] = await imageCompression.drawFileInCanvas(ctx.activeFile == 'original' ? ctx.originalFile! : ctx.processedFile!)
-        ctx.canvasContext.current?.drawImage(image, 0, 0, ctx.canvasSize!.width, ctx.canvasSize!.height)
+        ctx.canvasContext.current?.drawImage(image, 0, 0, ctx.canvasSize!.w, ctx.canvasSize!.h)
+        // ctx.canvasContext.current?.drawImage(ctx.activeFile == "original" ? imageCompression.drawFileInCanvas(ctx.originalFile) : ctx.processedFile)
     }
 
-    console.log(ctx.canvasSize)
 
     return (
         <div>
+            {/* <Button onClick={draw} > rysuj </Button> */}
             <div>
                 Szerokość
-                <Slider min={1} name="width-slider" defaultValue={ctx.canvasSize?.width} valueLabelDisplay='on' onChange={handleSliderChange} max={1920} > szerokość</Slider>
+                <Slider min={100} name="width-slider" defaultValue={oryginalSize?.w} valueLabelDisplay='on' onChange={handleSliderChange} max={1920} > szerokość</Slider>
                 Wysokość
-                <Slider min={1} name="height-slider" defaultValue={ctx.canvasSize?.height} valueLabelDisplay='on' onChange={handleSliderChange} max={1080}> długość</Slider>
+                <Slider min={100} name="height-slider" defaultValue={oryginalSize?.h} valueLabelDisplay='on' onChange={handleSliderChange} max={1080}> długość</Slider>
             </div>
         </div >
     )

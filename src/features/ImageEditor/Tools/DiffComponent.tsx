@@ -4,9 +4,6 @@ import { ImageEditorContext } from '../ImageEditor'
 import parseSizeToHumanReadable from '@/src/utils/parseSizeToHumanReadable'
 
 export const DiffComponent = () => {
-
-    return <>diff component</>
-
     const ctx = useContext(ImageEditorContext)
     const [element, setElement] = useState<null | JSX.Element>()
     const orginalRef = useRef<HTMLCanvasElement>()
@@ -72,12 +69,12 @@ export const DiffComponent = () => {
             <ImageContainer>
                 <h2> Oryginalny obraz {parseSizeToHumanReadable(ctx.originalFile?.size ?? 0)}</h2>
                 {/* {oimgElement} */}
-                <canvas ref={orginalRef as any} width={ctx.canvasSize?.width} style={{ aspectRatio: 'auto', width: '100%' }} height={ctx.canvasSize?.height} />
+                <canvas ref={orginalRef as any} width={ctx.canvasSize?.w} style={{ aspectRatio: 'auto', width: '100%' }} height={ctx.canvasSize?.h} />
             </ImageContainer>
             <ImageContainer>
 
                 <h2 > Skompresowany o obraz  {parseSizeToHumanReadable(ctx.processedFile?.size ?? 0)}</h2>
-                <canvas ref={processedRef as any} width={ctx.canvasSize?.width} style={{ aspectRatio: 'auto', width: '100%' }} height={ctx.canvasSize?.height} />
+                <canvas ref={processedRef as any} width={ctx.canvasSize?.w} style={{ aspectRatio: 'auto', width: '100%' }} height={ctx.canvasSize?.h} />
             </ImageContainer>
         </div>
     )
